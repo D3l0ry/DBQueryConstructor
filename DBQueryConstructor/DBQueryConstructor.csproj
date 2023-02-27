@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Handy.MsSql" Version="1.0.4" />
-    <PackageReference Include="HandyORM" Version="1.0.17" />
+    <PackageReference Include="HandyORM" Version="1.0.17.2" />
   </ItemGroup>
 
   <ItemGroup>

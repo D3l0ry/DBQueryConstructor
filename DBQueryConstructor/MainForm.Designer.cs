@@ -49,6 +49,9 @@
             this.queryConstructorMiscResultTabPage = new System.Windows.Forms.TabPage();
             this.mainFormSplitContainer = new System.Windows.Forms.SplitContainer();
             this.databasePanel1 = new DBQueryConstructor.Controls.DatabasePanels.DatabasePanel();
+            this.queryConstructorMiscResultInfoToolStrip = new System.Windows.Forms.ToolStrip();
+            this.queryConstructorMiscResultInfoRowCountInfoLabel = new System.Windows.Forms.ToolStripLabel();
+            this.queryConstructorMiscResultInfoRowCountLabel = new System.Windows.Forms.ToolStripLabel();
             this.queryConstructorTabControl.SuspendLayout();
             this.queryTabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.queryTabPageSplitContainer)).BeginInit();
@@ -61,10 +64,12 @@
             this.queryConstructorMiscConditionTabPage.SuspendLayout();
             this.queryConstructorMiscQueryTextTabPage.SuspendLayout();
             this.queryConsturctorQueryToolStrip.SuspendLayout();
+            this.queryConstructorMiscResultTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainFormSplitContainer)).BeginInit();
             this.mainFormSplitContainer.Panel1.SuspendLayout();
             this.mainFormSplitContainer.Panel2.SuspendLayout();
             this.mainFormSplitContainer.SuspendLayout();
+            this.queryConstructorMiscResultInfoToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // treeViewImageList
@@ -275,6 +280,7 @@
             // 
             // queryConstructorMiscResultTabPage
             // 
+            this.queryConstructorMiscResultTabPage.Controls.Add(this.queryConstructorMiscResultInfoToolStrip);
             this.queryConstructorMiscResultTabPage.Location = new System.Drawing.Point(4, 22);
             this.queryConstructorMiscResultTabPage.Name = "queryConstructorMiscResultTabPage";
             this.queryConstructorMiscResultTabPage.Size = new System.Drawing.Size(955, 175);
@@ -311,6 +317,30 @@
             this.databasePanel1.CloseConnection += new System.EventHandler(this.DatabasePanel_CloseConnection);
             this.databasePanel1.TableDragDrop += new System.EventHandler<System.Windows.Forms.DragEventArgs>(this.DatabasePanel_TableDragDrop);
             // 
+            // queryConstructorMiscResultInfoToolStrip
+            // 
+            this.queryConstructorMiscResultInfoToolStrip.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.queryConstructorMiscResultInfoToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.queryConstructorMiscResultInfoToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.queryConstructorMiscResultInfoRowCountLabel,
+            this.queryConstructorMiscResultInfoRowCountInfoLabel});
+            this.queryConstructorMiscResultInfoToolStrip.Location = new System.Drawing.Point(0, 150);
+            this.queryConstructorMiscResultInfoToolStrip.Name = "queryConstructorMiscResultInfoToolStrip";
+            this.queryConstructorMiscResultInfoToolStrip.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.queryConstructorMiscResultInfoToolStrip.Size = new System.Drawing.Size(955, 25);
+            this.queryConstructorMiscResultInfoToolStrip.TabIndex = 0;
+            // 
+            // queryConstructorMiscResultInfoRowCountInfoLabel
+            // 
+            this.queryConstructorMiscResultInfoRowCountInfoLabel.Name = "queryConstructorMiscResultInfoRowCountInfoLabel";
+            this.queryConstructorMiscResultInfoRowCountInfoLabel.Size = new System.Drawing.Size(99, 22);
+            this.queryConstructorMiscResultInfoRowCountInfoLabel.Text = "Количество строк";
+            // 
+            // queryConstructorMiscResultInfoRowCountLabel
+            // 
+            this.queryConstructorMiscResultInfoRowCountLabel.Name = "queryConstructorMiscResultInfoRowCountLabel";
+            this.queryConstructorMiscResultInfoRowCountLabel.Size = new System.Drawing.Size(0, 22);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -336,10 +366,14 @@
             this.queryConstructorMiscQueryTextTabPage.PerformLayout();
             this.queryConsturctorQueryToolStrip.ResumeLayout(false);
             this.queryConsturctorQueryToolStrip.PerformLayout();
+            this.queryConstructorMiscResultTabPage.ResumeLayout(false);
+            this.queryConstructorMiscResultTabPage.PerformLayout();
             this.mainFormSplitContainer.Panel1.ResumeLayout(false);
             this.mainFormSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mainFormSplitContainer)).EndInit();
             this.mainFormSplitContainer.ResumeLayout(false);
+            this.queryConstructorMiscResultInfoToolStrip.ResumeLayout(false);
+            this.queryConstructorMiscResultInfoToolStrip.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -364,5 +398,8 @@
         private ImageList treeViewImageList;
         private Controls.ColumnPanels.ColumnListView queryConstructorMiscFieldListView;
         private Controls.DatabasePanels.DatabasePanel databasePanel1;
+        private ToolStrip queryConstructorMiscResultInfoToolStrip;
+        private ToolStripLabel queryConstructorMiscResultInfoRowCountLabel;
+        private ToolStripLabel queryConstructorMiscResultInfoRowCountInfoLabel;
     }
 }

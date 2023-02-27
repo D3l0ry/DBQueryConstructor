@@ -1,10 +1,8 @@
 using System.Data.Common;
-using System.Text;
 
 using DBQueryConstructor.Controls;
 using DBQueryConstructor.Controls.ColumnPanels;
 using DBQueryConstructor.Controls.TablePanels;
-using DBQueryConstructor.Database;
 using DBQueryConstructor.Database.Models;
 using DBQueryConstructor.QueryInteractions;
 
@@ -57,12 +55,12 @@ namespace DBQueryConstructor
 
             queryConstructorMiscJoinListView.Controls.Remove(removedTablePanel.Join);
 
-            foreach (ColumnPanel currentTableColumnPanel in removedTablePanel.QueryColumns)
+            foreach(ColumnPanel currentTableColumnPanel in removedTablePanel.QueryColumns)
             {
                 queryConstructorMiscFieldListView.Controls.Remove(currentTableColumnPanel);
             }
 
-            foreach (ConditionPanel currentTableConditionPanel in removedTablePanel.QueryConditions)
+            foreach(ConditionPanel currentTableConditionPanel in removedTablePanel.QueryConditions)
             {
                 queryConstructorMiscConditionListView.Controls.Remove(currentTableConditionPanel);
             }
@@ -87,14 +85,17 @@ namespace DBQueryConstructor
 
         private void QueryConstructorQueryToolExecuteButton_Click(object sender, EventArgs e)
         {
-            queryConstructorMiscResultTabPage.Controls.Clear();
+            queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryDataResult");
+            queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryError");
+            queryConstructorMiscResultInfoRowCountLabel.Text = null;
 
-            if (string.IsNullOrWhiteSpace(queryConstructorQueryText.Text))
+            if(string.IsNullOrWhiteSpace(queryConstructorQueryText.Text))
             {
                 return;
             }
 
             DataGridView dataGridView = new DataGridView();
+            dataGridView.Name = "queryDataResult";
             dataGridView.ReadOnly = true;
             dataGridView.AllowUserToAddRows = false;
             dataGridView.AllowUserToDeleteRows = false;
@@ -112,7 +113,7 @@ namespace DBQueryConstructor
             {
                 dataReader = command.ExecuteReader();
 
-                for (int index = 0; index < dataReader.FieldCount; index++)
+                for(int index = 0; index < dataReader.FieldCount; index++)
                 {
                     DataGridViewColumn viewColumn = new DataGridViewColumn();
                     DataGridViewTextBoxCell cell = new DataGridViewTextBoxCell();
@@ -122,11 +123,11 @@ namespace DBQueryConstructor
                     dataGridView.Columns.Add(viewColumn);
                 }
 
-                while (dataReader.Read())
+                while(dataReader.Read())
                 {
                     List<object> values = new List<object>();
 
-                    for (int index = 0; index < dataReader.FieldCount; index++)
+                    for(int index = 0; index < dataReader.FieldCount; index++)
                     {
                         object value = dataReader.GetValue(index);
 
@@ -137,16 +138,19 @@ namespace DBQueryConstructor
                 }
 
                 queryConstructorMiscResultTabPage.Controls.Add(dataGridView);
+                queryConstructorMiscResultInfoRowCountLabel.Text = dataGridView.RowCount.ToString();
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 TextBox errorTextBox = new TextBox();
+                errorTextBox.Name = "queryError";
                 errorTextBox.ReadOnly = true;
                 errorTextBox.Multiline = true;
                 errorTextBox.Dock = DockStyle.Fill;
                 errorTextBox.Text = ex.Message;
 
                 queryConstructorMiscResultTabPage.Controls.Add(errorTextBox);
+                queryConstructorMiscResultInfoRowCountLabel.Text = "Îøèáêà";
             }
             finally
             {
@@ -160,7 +164,7 @@ namespace DBQueryConstructor
         {
             _QueryBuilder.Clear();
 
-            if (queryConstructorTableListView.Controls.Count == 0)
+            if(queryConstructorTableListView.Controls.Count == 0)
             {
                 queryConstructorQueryText.Text = null;
 
@@ -176,14 +180,14 @@ namespace DBQueryConstructor
 
             _QueryBuilder.AddMainTable(mainTable);
 
-            foreach (ColumnPanel currentColumn in columnPanels)
+            foreach(ColumnPanel currentColumn in columnPanels)
             {
-                if (!currentColumn.Model.TablePanel.ColumnEnable)
+                if(!currentColumn.Model.TablePanel.ColumnEnable)
                 {
                     continue;
                 }
 
-                if (!currentColumn.Model.Checked)
+                if(!currentColumn.Model.Checked)
                 {
                     continue;
                 }
@@ -191,9 +195,9 @@ namespace DBQueryConstructor
                 _QueryBuilder.AddColumn(currentColumn.Parameter);
             }
 
-            foreach (JoinPanel currentJoinPanel in joinPanels)
+            foreach(JoinPanel currentJoinPanel in joinPanels)
             {
-                if (!currentJoinPanel.Model.ColumnEnable)
+                if(!currentJoinPanel.Model.ColumnEnable)
                 {
                     continue;
                 }
@@ -201,14 +205,14 @@ namespace DBQueryConstructor
                 _QueryBuilder.AddJoin(currentJoinPanel.Parameter);
             }
 
-            foreach (ConditionPanel currentConditionPanel in conditionPanels)
+            foreach(ConditionPanel currentConditionPanel in conditionPanels)
             {
-                if (!currentConditionPanel.Model.ColumnEnable)
+                if(!currentConditionPanel.Model.ColumnEnable)
                 {
                     continue;
                 }
 
-                if (!currentConditionPanel.Parameter.Valid())
+                if(!currentConditionPanel.Parameter.Valid())
                 {
                     continue;
                 }
