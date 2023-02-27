@@ -7,7 +7,7 @@ namespace DBQueryConstructor
         public static UsedDatabase UsedDatabase { get; set; }
 
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             ApplicationConfiguration.Initialize();
             Application.Run(new MainForm());
