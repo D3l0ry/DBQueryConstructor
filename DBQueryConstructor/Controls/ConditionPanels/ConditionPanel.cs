@@ -5,6 +5,17 @@ namespace DBQueryConstructor.Controls
 {
     internal class ConditionPanel : ViewGroupBox<TablePanel, QueryConditionParameter>
     {
+        private static readonly string[] _Equals = new string[]
+        {
+            "Равно",
+            "Не равно",
+            "Больше",
+            "Меньше",
+            "Больше либо равно",
+            "Меньше либо равно",
+            "Промежуток"
+        };
+
         private readonly ComboBox _ConditionComboBox;
         private readonly ComboBox _ColumnComboBox;
         private readonly ComboBox _EqualComboBox;
@@ -32,7 +43,6 @@ namespace DBQueryConstructor.Controls
         private void FillPanel()
         {
             QueryConditionType[] conditions = Enum.GetValues<QueryConditionType>();
-            string[] equals = new string[] { "Равно", "Не равно", "Промежуток" };
 
             _ConditionComboBox.DataSource = conditions;
             _ConditionComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -41,19 +51,22 @@ namespace DBQueryConstructor.Controls
             _ConditionComboBox.SelectedValueChanged += ValueChanged;
 
             _ColumnComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            _ColumnComboBox.DropDownWidth = 250;
+            _ColumnComboBox.DropDownWidth = 300;
+            _ColumnComboBox.Width = 200;
             _ColumnComboBox.Dock = DockStyle.Left;
             _ColumnComboBox.DropDown += ColumnComboBox_DropDown;
             _ColumnComboBox.SelectedValueChanged += ColumnComboBox_SelectedValueChanged;
             _ColumnComboBox.SelectedValueChanged += ValueChanged;
 
-            _EqualComboBox.DataSource = equals;
+            _EqualComboBox.Items.AddRange(_Equals);
             _EqualComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             _EqualComboBox.Dock = DockStyle.Left;
+            _EqualComboBox.DropDownWidth = 125;
+            _EqualComboBox.SelectedIndex = 0;
             _EqualComboBox.SelectedValueChanged += EqualComboBox_SelectedValueChanged;
             _EqualComboBox.SelectedValueChanged += ValueChanged;
 
-            _ParameterValue.Width = 100;
+            _ParameterValue.Width = 275;
             _ParameterValue.Dock = DockStyle.Left;
             _ParameterValue.TextChanged += ParameterValue_TextChanged;
             _ParameterValue.TextChanged += ValueChanged;

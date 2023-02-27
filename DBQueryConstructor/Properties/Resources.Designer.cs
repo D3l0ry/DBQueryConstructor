@@ -73,26 +73,6 @@ namespace DBQueryConstructor.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap databaseview {
-            get {
-                object obj = ResourceManager.GetObject("databaseview", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap datatable {
-            get {
-                object obj = ResourceManager.GetObject("datatable", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap Open_Database {
             get {
                 object obj = ResourceManager.GetObject("Open_Database", resourceCulture);

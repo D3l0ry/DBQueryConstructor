@@ -2,7 +2,7 @@
 
 namespace DBQueryConstructor.Controls
 {
-    internal class TableTreeNode : TreeNode
+    internal class TableTreeNode : TreeNode, IComparable<TableTreeNode>
     {
         public TableTreeNode(TableModel table) : base($"{table.Schema}.{table.Name}")
         {
@@ -12,5 +12,7 @@ namespace DBQueryConstructor.Controls
         }
 
         public TableModel Element { get; private set; }
+
+        public int CompareTo(TableTreeNode other) => Text.CompareTo(other.Text);
     }
 }

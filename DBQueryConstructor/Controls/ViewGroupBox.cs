@@ -6,7 +6,7 @@
 
         public ViewGroupBox(TableModel model) : base()
         {
-            if (model == null)
+            if(model == null)
             {
                 throw new ArgumentNullException(nameof(model));
             }

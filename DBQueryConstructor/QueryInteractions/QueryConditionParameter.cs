@@ -29,7 +29,8 @@ namespace DBQueryConstructor.QueryInteractions
 
             switch(Equal)
             {
-                //"Равно", "Не равно", "Диапазон", "Промежуток"
+                //"Равно","Не равно","Больше","Меньше","Больше либо равно","Меньше либо равно","Промежуток"
+
                 default:
                 case "Равно":
                     stringBuilder.Append(IsNull ? " IS " : '=');
@@ -37,6 +38,22 @@ namespace DBQueryConstructor.QueryInteractions
 
                 case "Не равно":
                     stringBuilder.Append(IsNull ? " IS NOT " : "!=");
+                    break;
+
+                case "Больше":
+                    stringBuilder.Append('>');
+                    break;
+
+                case "Меньше":
+                    stringBuilder.Append('<');
+                    break;
+
+                case "Больше либо равно":
+                    stringBuilder.Append(">=");
+                    break;
+
+                case "Меньше либо равно":
+                    stringBuilder.Append("<=");
                     break;
             }
 

@@ -90,6 +90,7 @@ namespace DBQueryConstructor.Controls.DatabasePanels
             rootNode.ImageKey = "databaseview";
             rootNode.SelectedImageKey = "databaseview";
 
+            List<TableTreeNode> nodes = new List<TableTreeNode>();
             TableModel[] tables = Program.UsedDatabase.Table.ToArray();
             TableColumnModel[] tablesColumns = Program.UsedDatabase.TableColumn.ToArray();
 
@@ -121,7 +122,7 @@ namespace DBQueryConstructor.Controls.DatabasePanels
                         $"{currentTableConstraint.SchemaName}.{currentTableConstraint.TableName}" == currentGroup.Key)
                     .ToArray();
 
-                rootNode.Nodes.Add(tableTreeNode);
+                nodes.Add(tableTreeNode);
 
                 foreach(TableColumnModel currentColumn in currentGroup)
                 {
@@ -159,6 +160,8 @@ namespace DBQueryConstructor.Controls.DatabasePanels
                 }
             }
 
+            nodes.Sort();
+            rootNode.Nodes.AddRange(nodes.ToArray());
             rootNode.Expand();
         }
 

@@ -19,6 +19,7 @@ namespace DBQueryConstructor.Controls
             AutoSize = true;
             MinimumSize = new Size(175, 50);
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            Padding = new Padding(5, 1, 5, 5);
 
             FillPanel();
 
@@ -46,7 +47,7 @@ namespace DBQueryConstructor.Controls
         {
             List<ColumnPanel> labels = new List<ColumnPanel>();
 
-            foreach (ColumnCheckBox currentTablePanelCheckBox in Columns)
+            foreach(ColumnCheckBox currentTablePanelCheckBox in Columns)
             {
                 ColumnPanel newFieldLabel = new ColumnPanel(currentTablePanelCheckBox);
 
@@ -78,7 +79,7 @@ namespace DBQueryConstructor.Controls
             topPanelLabel.Text = Model.GetTableName();
             topPanelLabel.Dock = DockStyle.Top;
 
-            foreach (TableColumnModel currentColumn in Model.Columns)
+            foreach(TableColumnModel currentColumn in Model.Columns)
             {
                 ColumnCheckBox newColumnCheckBox = new ColumnCheckBox(this, currentColumn);
                 newColumnCheckBox.Dock = DockStyle.Top;
