@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DBQueryConstructor.Controls.ColumnPanels
+﻿namespace DBQueryConstructor.Controls.ColumnPanels
 {
     internal class ColumnListView : ListViewPanel<ColumnPanel>
     {
-        public ColumnListView():base() { }
+        public ColumnListView() : base() { }
 
         protected override void OnControlAdded(ControlEventArgs e)
         {

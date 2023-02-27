@@ -30,8 +30,8 @@ namespace DBQueryConstructor.QueryInteractions
             for (int index = 0; index < _Columns.Count; index++)
             {
                 QueryField currentColumn = _Columns[index];
-                
-                if(!currentColumn.Valid())
+
+                if (!currentColumn.Valid())
                 {
                     continue;
                 }

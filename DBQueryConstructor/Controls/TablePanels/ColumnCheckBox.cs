@@ -7,7 +7,7 @@ namespace DBQueryConstructor.Controls
         private readonly TablePanel _Panel;
         private readonly TableColumnModel _Column;
 
-        public ColumnCheckBox(TablePanel panel,TableColumnModel column) : base()
+        public ColumnCheckBox(TablePanel panel, TableColumnModel column) : base()
         {
             if (panel == null)
             {

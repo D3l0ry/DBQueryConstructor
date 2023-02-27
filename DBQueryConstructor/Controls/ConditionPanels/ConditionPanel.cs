@@ -9,6 +9,7 @@ namespace DBQueryConstructor.Controls
         private readonly ComboBox _ColumnComboBox;
         private readonly ComboBox _EqualComboBox;
         private readonly TextBox _ParameterValue;
+        private readonly CheckBox _ParameterIsNull;
         private readonly Button _DeleteButton;
 
         public ConditionPanel(TablePanel panel) : base(panel)
@@ -17,6 +18,7 @@ namespace DBQueryConstructor.Controls
             _ColumnComboBox = new ComboBox();
             _EqualComboBox = new ComboBox();
             _ParameterValue = new TextBox();
+            _ParameterIsNull = new CheckBox();
             _DeleteButton = new Button();
 
             Text = Model.Model.GetTableName();
@@ -56,11 +58,17 @@ namespace DBQueryConstructor.Controls
             _ParameterValue.TextChanged += ParameterValue_TextChanged;
             _ParameterValue.TextChanged += ValueChanged;
 
+            _ParameterIsNull.Dock = DockStyle.Left;
+            _ParameterIsNull.Text = "NULL";
+            _ParameterIsNull.Padding = new Padding(7, 0, 0, 3);
+            _ParameterIsNull.CheckedChanged += ParameterIsNull_CheckedChanged;
+            _ParameterIsNull.CheckedChanged += ValueChanged;
+
             _DeleteButton.ForeColor = Color.Red;
             _DeleteButton.Text = "Удалить";
             _DeleteButton.FlatStyle = FlatStyle.Flat;
-            _DeleteButton.Dock = DockStyle.Left;
-            _DeleteButton.FlatAppearance.BorderSize = 0;
+            _DeleteButton.Dock = DockStyle.Right;
+            _DeleteButton.FlatAppearance.BorderSize = 1;
             _DeleteButton.FlatAppearance.MouseOverBackColor = Color.Transparent;
             _DeleteButton.FlatAppearance.MouseDownBackColor = Color.Transparent;
             _DeleteButton.Click += DeleteButton_Click;
@@ -68,6 +76,7 @@ namespace DBQueryConstructor.Controls
             Control[] controls = new Control[]
             {
                 _DeleteButton,
+                _ParameterIsNull,
                 _ParameterValue,
                 _EqualComboBox,
                 _ColumnComboBox,
@@ -103,6 +112,11 @@ namespace DBQueryConstructor.Controls
         private void ParameterValue_TextChanged(object sender, EventArgs e)
         {
             Parameter.ParameterValue = _ParameterValue.Text;
+        }
+
+        private void ParameterIsNull_CheckedChanged(object sender, EventArgs e)
+        {
+            Parameter.IsNull = _ParameterIsNull.Checked;
         }
 
         private void ValueChanged(object sender, EventArgs e) => OnDataChanged();

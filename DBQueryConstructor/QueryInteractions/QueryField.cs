@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 using DBQueryConstructor.Database.Models;
 
@@ -22,7 +18,7 @@ namespace DBQueryConstructor.QueryInteractions
 
             stringBuilder.Append(Column.GetColumnName());
 
-            if(!string.IsNullOrWhiteSpace(ColumnAlias))
+            if (!string.IsNullOrWhiteSpace(ColumnAlias))
             {
                 stringBuilder.Append(" AS ");
                 stringBuilder.Append('[');

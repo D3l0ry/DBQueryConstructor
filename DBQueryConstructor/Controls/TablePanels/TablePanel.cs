@@ -2,7 +2,6 @@
 
 using DBQueryConstructor.Controls.ColumnPanels;
 using DBQueryConstructor.Database.Models;
-using DBQueryConstructor.QueryInteractions;
 
 namespace DBQueryConstructor.Controls
 {
@@ -81,7 +80,7 @@ namespace DBQueryConstructor.Controls
 
             foreach (TableColumnModel currentColumn in Model.Columns)
             {
-                ColumnCheckBox newColumnCheckBox = new ColumnCheckBox(this,currentColumn);
+                ColumnCheckBox newColumnCheckBox = new ColumnCheckBox(this, currentColumn);
                 newColumnCheckBox.Dock = DockStyle.Top;
                 newColumnCheckBox.Text = currentColumn.Name;
                 newColumnCheckBox.CheckedChanged += CheckBox_CheckedChanged;

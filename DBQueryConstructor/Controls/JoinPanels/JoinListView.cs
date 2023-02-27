@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace DBQueryConstructor.Controls.JoinPanels
+﻿namespace DBQueryConstructor.Controls.JoinPanels
 {
     internal class JoinListView : ListViewPanel<JoinPanel>
     {

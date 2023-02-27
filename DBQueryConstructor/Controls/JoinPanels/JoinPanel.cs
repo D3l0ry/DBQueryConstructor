@@ -62,8 +62,8 @@ namespace DBQueryConstructor.Controls
             _QueryJoinDeleteButton.ForeColor = Color.Red;
             _QueryJoinDeleteButton.Text = "Удалить";
             _QueryJoinDeleteButton.FlatStyle = FlatStyle.Flat;
-            _QueryJoinDeleteButton.Dock = DockStyle.Left;
-            _QueryJoinDeleteButton.FlatAppearance.BorderSize = 0;
+            _QueryJoinDeleteButton.Dock = DockStyle.Right;
+            _QueryJoinDeleteButton.FlatAppearance.BorderSize = 1;
             _QueryJoinDeleteButton.FlatAppearance.MouseOverBackColor = Color.Transparent;
             _QueryJoinDeleteButton.FlatAppearance.MouseDownBackColor = Color.Transparent;
             _QueryJoinDeleteButton.Click += QueryJoinDeleteButton_Click;
@@ -99,7 +99,7 @@ namespace DBQueryConstructor.Controls
 
         private void QueryJoinTableSelectComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_QueryJoinTableSelectComboBox.SelectedIndex == -1)
+            if(_QueryJoinTableSelectComboBox.SelectedIndex == -1)
             {
                 Parameter.JoinedColumnTable = null;
 
@@ -114,7 +114,7 @@ namespace DBQueryConstructor.Controls
             _QueryJoinMainTableSelectComboBox.SelectedIndex = -1;
             _QueryJoinMainTableSelectComboBox.Items.Clear();
 
-            if (_QueryJoinTableSelectComboBox.SelectedIndex == -1)
+            if(_QueryJoinTableSelectComboBox.SelectedIndex == -1)
             {
                 return;
             }
@@ -127,7 +127,7 @@ namespace DBQueryConstructor.Controls
             IEnumerable<TablePanel> tablePanels = ((TableListView)Model.Parent).Panels
                 .Where(currentPanel => currentPanel.Model.GetTableName() != selectedJoinColumn.GetTableName() && currentPanel.ColumnEnable);
 
-            if (Parent.Controls.Count > 1)
+            if(Parent.Controls.Count > 1)
             {
                 tablePanels = tablePanels.Where(currentPanel =>
                     joinPanels.Any(currentJoin => currentJoin.Model == currentPanel) ||
@@ -144,7 +144,7 @@ namespace DBQueryConstructor.Controls
 
         private void QueryJoinMainTableSelectComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (_QueryJoinMainTableSelectComboBox.SelectedIndex == -1)
+            if(_QueryJoinMainTableSelectComboBox.SelectedIndex == -1)
             {
                 Parameter.MainColumnTable = null;
 

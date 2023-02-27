@@ -30,12 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.databasePanel = new System.Windows.Forms.Panel();
-            this.databaseTableTreeView = new System.Windows.Forms.TreeView();
             this.treeViewImageList = new System.Windows.Forms.ImageList(this.components);
-            this.databaseToolStrip = new System.Windows.Forms.ToolStrip();
-            this.openConnectionDatabaseToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.closeConnectionDatabaseToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorTabControl = new System.Windows.Forms.TabControl();
             this.queryTabPage1 = new System.Windows.Forms.TabPage();
             this.queryTabPageSplitContainer = new System.Windows.Forms.SplitContainer();
@@ -53,8 +48,7 @@
             this.queryConstructorQueryToolExecuteButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorMiscResultTabPage = new System.Windows.Forms.TabPage();
             this.mainFormSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.databasePanel.SuspendLayout();
-            this.databaseToolStrip.SuspendLayout();
+            this.databasePanel1 = new DBQueryConstructor.Controls.DatabasePanels.DatabasePanel();
             this.queryConstructorTabControl.SuspendLayout();
             this.queryTabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.queryTabPageSplitContainer)).BeginInit();
@@ -73,36 +67,6 @@
             this.mainFormSplitContainer.SuspendLayout();
             this.SuspendLayout();
             // 
-            // databasePanel
-            // 
-            this.databasePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.databasePanel.Controls.Add(this.databaseTableTreeView);
-            this.databasePanel.Controls.Add(this.databaseToolStrip);
-            this.databasePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.databasePanel.Location = new System.Drawing.Point(0, 0);
-            this.databasePanel.Name = "databasePanel";
-            this.databasePanel.Size = new System.Drawing.Size(200, 511);
-            this.databasePanel.TabIndex = 0;
-            // 
-            // databaseTableTreeView
-            // 
-            this.databaseTableTreeView.AllowDrop = true;
-            this.databaseTableTreeView.BackColor = System.Drawing.Color.White;
-            this.databaseTableTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.databaseTableTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.databaseTableTreeView.ImageIndex = 0;
-            this.databaseTableTreeView.ImageList = this.treeViewImageList;
-            this.databaseTableTreeView.Indent = 19;
-            this.databaseTableTreeView.ItemHeight = 21;
-            this.databaseTableTreeView.Location = new System.Drawing.Point(0, 25);
-            this.databaseTableTreeView.Name = "databaseTableTreeView";
-            this.databaseTableTreeView.SelectedImageIndex = 0;
-            this.databaseTableTreeView.Size = new System.Drawing.Size(198, 484);
-            this.databaseTableTreeView.TabIndex = 1;
-            this.databaseTableTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.DatabaseTableTreeView_ItemDrag);
-            this.databaseTableTreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.DatabaseTableTreeView_DragDrop);
-            this.databaseTableTreeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.DatabaseTableTreeView_DragEnter);
-            // 
             // treeViewImageList
             // 
             this.treeViewImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
@@ -111,39 +75,6 @@
             this.treeViewImageList.Images.SetKeyName(0, "databaseview.png");
             this.treeViewImageList.Images.SetKeyName(1, "datatable.png");
             this.treeViewImageList.Images.SetKeyName(2, "column.png");
-            // 
-            // databaseToolStrip
-            // 
-            this.databaseToolStrip.BackColor = System.Drawing.Color.White;
-            this.databaseToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.databaseToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openConnectionDatabaseToolStripButton,
-            this.closeConnectionDatabaseToolStripButton});
-            this.databaseToolStrip.Location = new System.Drawing.Point(0, 0);
-            this.databaseToolStrip.Name = "databaseToolStrip";
-            this.databaseToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.databaseToolStrip.Size = new System.Drawing.Size(198, 25);
-            this.databaseToolStrip.TabIndex = 0;
-            // 
-            // openConnectionDatabaseToolStripButton
-            // 
-            this.openConnectionDatabaseToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.openConnectionDatabaseToolStripButton.Image = global::DBQueryConstructor.Properties.Resources.Open_Database;
-            this.openConnectionDatabaseToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.openConnectionDatabaseToolStripButton.Name = "openConnectionDatabaseToolStripButton";
-            this.openConnectionDatabaseToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.openConnectionDatabaseToolStripButton.ToolTipText = "Открыть соединение";
-            this.openConnectionDatabaseToolStripButton.Click += new System.EventHandler(this.OpenConnectionDatabaseToolStripButton_Click);
-            // 
-            // closeConnectionDatabaseToolStripButton
-            // 
-            this.closeConnectionDatabaseToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.closeConnectionDatabaseToolStripButton.Image = global::DBQueryConstructor.Properties.Resources.Close_Database;
-            this.closeConnectionDatabaseToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.closeConnectionDatabaseToolStripButton.Name = "closeConnectionDatabaseToolStripButton";
-            this.closeConnectionDatabaseToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.closeConnectionDatabaseToolStripButton.ToolTipText = "Закрыть соединение";
-            this.closeConnectionDatabaseToolStripButton.Click += new System.EventHandler(this.CloseConnectionDatabaseToolStripButton_Click);
             // 
             // queryConstructorTabControl
             // 
@@ -359,7 +290,7 @@
             // 
             // mainFormSplitContainer.Panel1
             // 
-            this.mainFormSplitContainer.Panel1.Controls.Add(this.databasePanel);
+            this.mainFormSplitContainer.Panel1.Controls.Add(this.databasePanel1);
             // 
             // mainFormSplitContainer.Panel2
             // 
@@ -368,6 +299,17 @@
             this.mainFormSplitContainer.SplitterDistance = 200;
             this.mainFormSplitContainer.SplitterWidth = 5;
             this.mainFormSplitContainer.TabIndex = 2;
+            // 
+            // databasePanel1
+            // 
+            this.databasePanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.databasePanel1.ImageList = this.treeViewImageList;
+            this.databasePanel1.Location = new System.Drawing.Point(0, 0);
+            this.databasePanel1.Name = "databasePanel1";
+            this.databasePanel1.Size = new System.Drawing.Size(200, 511);
+            this.databasePanel1.TabIndex = 0;
+            this.databasePanel1.CloseConnection += new System.EventHandler(this.DatabasePanel_CloseConnection);
+            this.databasePanel1.TableDragDrop += new System.EventHandler<System.Windows.Forms.DragEventArgs>(this.DatabasePanel_TableDragDrop);
             // 
             // MainForm
             // 
@@ -380,10 +322,6 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Конструктор запросов";
-            this.databasePanel.ResumeLayout(false);
-            this.databasePanel.PerformLayout();
-            this.databaseToolStrip.ResumeLayout(false);
-            this.databaseToolStrip.PerformLayout();
             this.queryConstructorTabControl.ResumeLayout(false);
             this.queryTabPage1.ResumeLayout(false);
             this.queryTabPageSplitContainer.Panel1.ResumeLayout(false);
@@ -407,12 +345,6 @@
         }
 
         #endregion
-
-        private Panel databasePanel;
-        private ToolStrip databaseToolStrip;
-        private ToolStripButton openConnectionDatabaseToolStripButton;
-        private ToolStripButton closeConnectionDatabaseToolStripButton;
-        private TreeView databaseTableTreeView;
         private TabControl queryConstructorTabControl;
         private SplitContainer mainFormSplitContainer;
         private TabPage queryTabPage1;
@@ -431,5 +363,6 @@
         private Controls.ConditionPanels.ConditionListView queryConstructorMiscConditionListView;
         private ImageList treeViewImageList;
         private Controls.ColumnPanels.ColumnListView queryConstructorMiscFieldListView;
+        private Controls.DatabasePanels.DatabasePanel databasePanel1;
     }
 }

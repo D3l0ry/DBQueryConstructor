@@ -14,28 +14,30 @@ namespace DBQueryConstructor.QueryInteractions
 
         public object ParameterValue { get; set; }
 
-        public bool Valid() => Column != null && ParameterValue != null;
+        public bool IsNull { get; set; }
+
+        public bool Valid() => Column != null;
 
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
 
             string columnName = Column.GetColumnName();
-            string value = Handy.TableInteractions.TableProperties.ConvertFieldQuery(ParameterValue);
+            string value = IsNull ? "NULL" : Handy.TableInteractions.TableProperties.ConvertFieldQuery(ParameterValue);
 
             stringBuilder.Append(columnName);
 
-            switch (Equal)
+            switch(Equal)
             {
                 //"Равно", "Не равно", "Диапазон", "Промежуток"
                 default:
                 case "Равно":
-                stringBuilder.Append('=');
-                break;
+                    stringBuilder.Append(IsNull ? " IS " : '=');
+                    break;
 
                 case "Не равно":
-                stringBuilder.Append("!=");
-                break;
+                    stringBuilder.Append(IsNull ? " IS NOT " : "!=");
+                    break;
             }
 
             stringBuilder.Append(value);

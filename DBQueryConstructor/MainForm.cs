@@ -34,132 +34,21 @@ namespace DBQueryConstructor
             }
         }
 
-        #region DatabasePanel
-        private void FillTableTreeView()
+        private void DatabasePanel_CloseConnection(object sender, EventArgs e)
         {
-            TreeNode rootNode = databaseTableTreeView.Nodes.Add(Program.UsedDatabase.Connection.Database);
-            rootNode.ImageKey = "databaseview";
-            rootNode.SelectedImageKey = "databaseview";
-
-            TableModel[] tables = Program.UsedDatabase.Table.ToArray();
-            TableColumnModel[] tablesColumns = Program.UsedDatabase.TableColumn.ToArray();
-
-            if (tablesColumns.Length == 0)
-            {
-                return;
-            }
-
-            TableConstraintModel[] tableConstraints = Program.UsedDatabase.TableConstraint.ToArray();
-            ColumnConstraintModel[] columnConstraints = Program.UsedDatabase.ColumnConstraint.ToArray();
-            IEnumerable<IGrouping<string, TableColumnModel>> tableGroup = tablesColumns
-                .GroupBy(currentColumn => $"{currentColumn.TableSchema}.{currentColumn.TableName}");
-
-            foreach (IGrouping<string, TableColumnModel> currentGroup in tableGroup)
-            {
-                TableModel selectedTable = tables
-                    .FirstOrDefault(currentTable => $"{currentTable.Schema}.{currentTable.Name}" == currentGroup.Key);
-
-                if (selectedTable == null)
-                {
-                    continue;
-                }
-
-                selectedTable.Columns = currentGroup.ToArray();
-
-                TableTreeNode tableTreeNode = new TableTreeNode(selectedTable);
-                TableConstraintModel[] selectedTableConstraints = tableConstraints
-                    .Where(currentTableConstraint =>
-                        $"{currentTableConstraint.SchemaName}.{currentTableConstraint.TableName}" == currentGroup.Key)
-                    .ToArray();
-
-                rootNode.Nodes.Add(tableTreeNode);
-
-                foreach (TableColumnModel currentColumn in currentGroup)
-                {
-                    StringBuilder columnBuilder = new StringBuilder($"{currentColumn.Name} (");
-
-                    foreach (TableConstraintModel currentTableConstraint in selectedTableConstraints)
-                    {
-                        ColumnConstraintModel selectedColumnConstraint = columnConstraints
-                            .FirstOrDefault(currentColumnConstraint =>
-                                currentColumnConstraint.SchemaName == currentTableConstraint.SchemaName &&
-                                currentColumnConstraint.TableName == currentTableConstraint.TableName &&
-                                currentColumnConstraint.ColumnName == currentColumn.Name &&
-                                currentColumnConstraint.Name == currentTableConstraint.Name);
-
-                        if (selectedColumnConstraint == null)
-                        {
-                            continue;
-                        }
-
-                        currentColumn.Constraint = selectedColumnConstraint;
-
-                        columnBuilder.Append($"{currentTableConstraint.Type}, ");
-
-                        break;
-                    }
-
-                    columnBuilder.Append($"{currentColumn.Type}, ");
-                    columnBuilder.Append($"{(currentColumn.IsNullable.Equals("YES") ? "null" : "not null")})");
-
-                    TreeNode tableColumnNode = new TreeNode(columnBuilder.ToString());
-                    tableColumnNode.ImageKey = "column.png";
-                    tableColumnNode.SelectedImageKey = "column.png";
-
-                    tableTreeNode.Nodes.Add(tableColumnNode);
-                }
-            }
-
-            rootNode.Expand();
-        }
-
-        private void OpenConnectionDatabaseToolStripButton_Click(object sender, EventArgs e)
-        {
-            if (Program.UsedDatabase != null)
-            {
-                return;
-            }
-
-            Program.UsedDatabase = new UsedDatabase("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;");
-            FillTableTreeView();
-        }
-
-        private void CloseConnectionDatabaseToolStripButton_Click(object sender, EventArgs e)
-        {
-            databaseTableTreeView.Nodes.Clear();
             queryConstructorTableListView.Controls.Clear();
             queryConstructorMiscFieldListView.Controls.Clear();
             queryConstructorMiscJoinTabPage.Controls.Clear();
             queryConstructorMiscConditionTabPage.Controls.Clear();
             queryConstructorQueryText.Text = null;
             queryConstructorMiscResultTabPage.Controls.Clear();
-
-            Program.UsedDatabase?.Dispose();
-            Program.UsedDatabase = null;
         }
 
-        private void DatabaseTableTreeView_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            if (e.Item is TableTreeNode)
-            {
-                DoDragDrop(e.Item, DragDropEffects.Move);
-            }
-        }
-
-        private void DatabaseTableTreeView_DragEnter(object sender, DragEventArgs e)
-        {
-            if(e.Data.GetDataPresent(typeof(TablePanel)))
-            {
-                e.Effect = DragDropEffects.Move;
-            }
-        }
-
-        private void DatabaseTableTreeView_DragDrop(object sender, DragEventArgs e)
+        private void DatabasePanel_TableDragDrop(object sender, DragEventArgs e)
         {
             TablePanel selectedTableNode = (TablePanel)e.Data.GetData(typeof(TablePanel));
             queryConstructorTableListView.Controls.Remove(selectedTableNode);
         }
-        #endregion
 
         #region Query Constructor
         private void QueryConstructorTableListView_ControlRemoved(object sender, ControlEventArgs e)
@@ -168,12 +57,12 @@ namespace DBQueryConstructor
 
             queryConstructorMiscJoinListView.Controls.Remove(removedTablePanel.Join);
 
-            foreach(ColumnPanel currentTableColumnPanel in removedTablePanel.QueryColumns)
+            foreach (ColumnPanel currentTableColumnPanel in removedTablePanel.QueryColumns)
             {
                 queryConstructorMiscFieldListView.Controls.Remove(currentTableColumnPanel);
             }
 
-            foreach(ConditionPanel currentTableConditionPanel in removedTablePanel.QueryConditions)
+            foreach (ConditionPanel currentTableConditionPanel in removedTablePanel.QueryConditions)
             {
                 queryConstructorMiscConditionListView.Controls.Remove(currentTableConditionPanel);
             }
@@ -194,10 +83,7 @@ namespace DBQueryConstructor
             GenerateQuery();
         }
 
-        private void QueryConstructorMiscListView_DataChanged(object sender, EventArgs e)
-        {
-            GenerateQuery();
-        }
+        private void QueryConstructorMiscListView_DataChanged(object sender, EventArgs e) => GenerateQuery();
 
         private void QueryConstructorQueryToolExecuteButton_Click(object sender, EventArgs e)
         {
@@ -292,12 +178,12 @@ namespace DBQueryConstructor
 
             foreach (ColumnPanel currentColumn in columnPanels)
             {
-                if(!currentColumn.Model.TablePanel.ColumnEnable)
+                if (!currentColumn.Model.TablePanel.ColumnEnable)
                 {
                     continue;
                 }
 
-                if(!currentColumn.Model.Checked)
+                if (!currentColumn.Model.Checked)
                 {
                     continue;
                 }
