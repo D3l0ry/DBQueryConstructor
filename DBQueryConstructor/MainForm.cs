@@ -36,10 +36,11 @@ namespace DBQueryConstructor
         {
             queryConstructorTableListView.Controls.Clear();
             queryConstructorMiscFieldListView.Controls.Clear();
-            queryConstructorMiscJoinTabPage.Controls.Clear();
-            queryConstructorMiscConditionTabPage.Controls.Clear();
+            queryConstructorMiscJoinListView.Controls.Clear();
+            queryConstructorMiscConditionListView.Controls.Clear();
+            queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryDataResult");
+            queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryError");
             queryConstructorQueryText.Text = null;
-            queryConstructorMiscResultTabPage.Controls.Clear();
         }
 
         private void DatabasePanel_TableDragDrop(object sender, DragEventArgs e)
