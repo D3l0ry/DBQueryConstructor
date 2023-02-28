@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Text;
 
-using DBQueryConstructor.Database;
 using DBQueryConstructor.Database.Models;
 using DBQueryConstructor.Properties;
 
@@ -167,13 +166,16 @@ namespace DBQueryConstructor.Controls.DatabasePanels
 
         private void OpenConnectionDatabaseToolStripButton_Click(object sender, EventArgs e)
         {
-            if(Program.UsedDatabase != null)
+            ConnectionForm connectionForm = new ConnectionForm();
+            DialogResult result = connectionForm.ShowDialog();
+
+            if(result == DialogResult.Cancel)
             {
                 return;
             }
 
-            Program.UsedDatabase = new UsedDatabase("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;");
-
+            _DatabaseTableTreeView.Nodes.Clear();
+            OnClosedConnection();
             FillTableTreeView();
         }
 
