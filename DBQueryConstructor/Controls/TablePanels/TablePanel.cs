@@ -35,8 +35,6 @@ namespace DBQueryConstructor.Controls
 
         public JoinPanel Join { get; set; }
 
-        public new bool Parameter { get; set; }
-
         public bool ColumnEnable
         {
             get => _ColumnPanel.Enabled;

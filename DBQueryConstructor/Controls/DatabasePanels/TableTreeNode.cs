@@ -1,6 +1,6 @@
 ﻿using DBQueryConstructor.Database.Models;
 
-namespace DBQueryConstructor.Controls
+namespace DBQueryConstructor.Controls.DatabasePanels
 {
     internal class TableTreeNode : TreeNode, IComparable<TableTreeNode>
     {

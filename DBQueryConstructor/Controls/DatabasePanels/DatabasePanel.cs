@@ -201,6 +201,13 @@ namespace DBQueryConstructor.Controls.DatabasePanels
         {
             if(e.Data.GetDataPresent(typeof(TablePanel)))
             {
+                TablePanel selectedTablePanel = (TablePanel)e.Data.GetData(typeof(TablePanel));
+
+                if(selectedTablePanel.Parameter)
+                {
+                    return;
+                }
+
                 e.Effect = DragDropEffects.Move;
             }
         }

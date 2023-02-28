@@ -1,12 +1,36 @@
-﻿namespace DBQueryConstructor.Controls.TablePanels
+﻿using DBQueryConstructor.Controls.DatabasePanels;
+
+namespace DBQueryConstructor.Controls.TablePanels
 {
     internal class TableListView : ListViewPanel<TablePanel>
     {
         public TableListView() : base() { }
 
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Graphics graphics = e.Graphics;
+
+            if(Controls.Count > 0)
+            {
+                base.OnPaint(e);
+
+                return;
+            }
+
+            string message = "Первая добавленная таблица является главной и не подлежит удалению";
+            Font textFont = new Font("Tahoma", 14);
+            Brush lightGreen = Brushes.DimGray;
+            SizeF messageMeasure = graphics.MeasureString(message, textFont);
+            PointF point = new PointF((Width / 2) - (messageMeasure.Width / 2), Height / 2);
+
+            graphics.DrawString(message, textFont, lightGreen, point);
+
+            base.OnPaint(e);
+        }
+
         protected override void OnDragEnter(DragEventArgs drgevent)
         {
-            if (drgevent.Data.GetDataPresent(typeof(TableTreeNode)))
+            if(drgevent.Data.GetDataPresent(typeof(TableTreeNode)))
             {
                 drgevent.Effect = DragDropEffects.Move;
             }
@@ -16,7 +40,7 @@
         {
             TableTreeNode selectedTableNode = (TableTreeNode)drgevent.Data.GetData(typeof(TableTreeNode));
 
-            if (selectedTableNode == null)
+            if(selectedTableNode == null)
             {
                 return;
             }
@@ -25,7 +49,7 @@
                 .Cast<TablePanel>()
                 .Any(currentTablePanel => currentTablePanel.Model == selectedTableNode.Element);
 
-            if (isExists)
+            if(isExists)
             {
                 string message = "Такая таблица уже добавлена в конструктор!";
                 string title = "Ошибка добавления таблицы";

@@ -82,31 +82,6 @@ namespace DBQueryConstructor.Controls
             Controls.AddRange(controls);
         }
 
-        private void ClearJoinMainTableColumns()
-        {
-            if(_QueryJoinTableSelectComboBox.SelectedIndex != -1)
-            {
-                TableColumnModel selectedTableColumn = (TableColumnModel)_QueryJoinTableSelectComboBox.SelectedItem;
-
-                IEnumerable<JoinPanel> joinPanels = ((JoinListView)Parent).Panels;
-
-                foreach(JoinPanel currentJoinPanel in joinPanels)
-                {
-                    if(currentJoinPanel.JoinMainTableColumn.SelectedIndex == -1)
-                    {
-                        continue;
-                    }
-
-                    TableColumnModel selectedMainTableColumn = (TableColumnModel)currentJoinPanel.JoinMainTableColumn.SelectedItem;
-
-                    if(selectedMainTableColumn.GetTableName() == selectedTableColumn.GetTableName())
-                    {
-                        currentJoinPanel.JoinMainTableColumn.SelectedIndex = -1;
-                    }
-                }
-            }
-        }
-
         private void QueryJoinSelectComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
             Parameter.Join = (QueryJoinType)_QueryJoinSelectComboBox.SelectedItem;
@@ -116,7 +91,7 @@ namespace DBQueryConstructor.Controls
         {
             TableColumnModel[] columns = Model.Model.Columns;
 
-            ClearJoinMainTableColumns();
+            ((JoinListView)Parent).ClearJoinMainTableColumns(Text);
 
             _QueryJoinTableSelectComboBox.SelectedIndex = -1;
             _QueryJoinMainTableSelectComboBox.SelectedIndex = -1;
@@ -140,7 +115,7 @@ namespace DBQueryConstructor.Controls
 
         private void QueryJoinMainTableSelectComboBox_DropDown(object sender, EventArgs e)
         {
-            ClearJoinMainTableColumns();
+            ((JoinListView)Parent).ClearJoinMainTableColumns(Text);
 
             _QueryJoinMainTableSelectComboBox.SelectedIndex = -1;
             _QueryJoinMainTableSelectComboBox.Items.Clear();
@@ -199,7 +174,7 @@ namespace DBQueryConstructor.Controls
             Model.ColumnEnable = false;
             Model.Join = null;
 
-            ClearJoinMainTableColumns();
+            ((JoinListView)Parent).ClearJoinMainTableColumns(Text);
 
             Parent.Controls.Remove(this);
 

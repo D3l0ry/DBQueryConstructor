@@ -32,7 +32,7 @@ namespace DBQueryConstructor
             }
         }
 
-        private void DatabasePanel_CloseConnection(object sender, EventArgs e)
+        private void ClearConstructor()
         {
             queryConstructorTableListView.Controls.Clear();
             queryConstructorMiscFieldListView.Controls.Clear();
@@ -43,10 +43,25 @@ namespace DBQueryConstructor
             queryConstructorQueryText.Text = null;
         }
 
+        private void DatabasePanel_CloseConnection(object sender, EventArgs e) => ClearConstructor();
+
         private void DatabasePanel_TableDragDrop(object sender, DragEventArgs e)
         {
             TablePanel selectedTableNode = (TablePanel)e.Data.GetData(typeof(TablePanel));
             queryConstructorTableListView.Controls.Remove(selectedTableNode);
+        }
+
+        private void ClearConstructorToolStripButton_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox
+                .Show("Вы уверены, что хотите очистить конструктор?", "Очистка конструктора", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if(result == DialogResult.No)
+            {
+                return;
+            }
+
+            ClearConstructor();
         }
 
         #region Query Constructor
