@@ -56,7 +56,7 @@ namespace DBQueryConstructor
             DialogResult result = MessageBox
                 .Show("Вы уверены, что хотите очистить конструктор?", "Очистка конструктора", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if(result == DialogResult.No)
+            if (result == DialogResult.No)
             {
                 return;
             }
@@ -64,19 +64,18 @@ namespace DBQueryConstructor
             ClearConstructor();
         }
 
-        #region Query Constructor
         private void QueryConstructorTableListView_ControlRemoved(object sender, ControlEventArgs e)
         {
             TablePanel removedTablePanel = (TablePanel)e.Control;
 
             queryConstructorMiscJoinListView.Controls.Remove(removedTablePanel.Join);
 
-            foreach(ColumnPanel currentTableColumnPanel in removedTablePanel.QueryColumns)
+            foreach (ColumnPanel currentTableColumnPanel in removedTablePanel.QueryColumns)
             {
                 queryConstructorMiscFieldListView.Controls.Remove(currentTableColumnPanel);
             }
 
-            foreach(ConditionPanel currentTableConditionPanel in removedTablePanel.QueryConditions)
+            foreach (ConditionPanel currentTableConditionPanel in removedTablePanel.QueryConditions)
             {
                 queryConstructorMiscConditionListView.Controls.Remove(currentTableConditionPanel);
             }
@@ -101,25 +100,16 @@ namespace DBQueryConstructor
 
         private void QueryConstructorQueryToolExecuteButton_Click(object sender, EventArgs e)
         {
-            queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryDataResult");
             queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryError");
-            queryConstructorMiscResultInfoRowCountLabel.Text = null;
+            queryConstructorMiscResultDataGrid.Visible = true;
 
-            if(string.IsNullOrWhiteSpace(queryConstructorQueryText.Text))
+            if (string.IsNullOrWhiteSpace(queryConstructorQueryText.Text))
             {
                 return;
             }
 
-            DataGridView dataGridView = new DataGridView();
-            dataGridView.Name = "queryDataResult";
-            dataGridView.ReadOnly = true;
-            dataGridView.AllowUserToAddRows = false;
-            dataGridView.AllowUserToDeleteRows = false;
-            dataGridView.AllowUserToResizeColumns = true;
-            dataGridView.Dock = DockStyle.Fill;
-
-            dataGridView.Rows.Clear();
-            dataGridView.Columns.Clear();
+            queryConstructorMiscResultDataGrid.Rows.Clear();
+            queryConstructorMiscResultDataGrid.Columns.Clear();
 
             DbCommand command = Program.UsedDatabase.Connection.CreateCommand();
             command.CommandText = queryConstructorQueryText.Text;
@@ -127,36 +117,39 @@ namespace DBQueryConstructor
 
             try
             {
+                int rowNumber = 1;
                 dataReader = command.ExecuteReader();
 
-                for(int index = 0; index < dataReader.FieldCount; index++)
+                for (int index = 0; index < dataReader.FieldCount; index++)
                 {
                     DataGridViewColumn viewColumn = new DataGridViewColumn();
                     DataGridViewTextBoxCell cell = new DataGridViewTextBoxCell();
                     viewColumn.Name = dataReader.GetName(index);
                     viewColumn.CellTemplate = cell;
 
-                    dataGridView.Columns.Add(viewColumn);
+                    queryConstructorMiscResultDataGrid.Columns.Add(viewColumn);
                 }
 
-                while(dataReader.Read())
+                while (dataReader.Read())
                 {
                     List<object> values = new List<object>();
 
-                    for(int index = 0; index < dataReader.FieldCount; index++)
+                    for (int index = 0; index < dataReader.FieldCount; index++)
                     {
                         object value = dataReader.GetValue(index);
 
                         values.Add(value);
                     }
 
-                    dataGridView.Rows.Add(values.ToArray());
+                    int rowIndex = queryConstructorMiscResultDataGrid.Rows.Add(values.ToArray());
+                    queryConstructorMiscResultDataGrid.Rows[rowIndex].HeaderCell.Value = rowNumber.ToString();
+
+                    rowNumber++;
                 }
 
-                queryConstructorMiscResultTabPage.Controls.Add(dataGridView);
-                queryConstructorMiscResultInfoRowCountLabel.Text = dataGridView.RowCount.ToString();
+                queryConstructorMiscResultRowCountLabel.Text = queryConstructorMiscResultDataGrid.RowCount.ToString();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 TextBox errorTextBox = new TextBox();
                 errorTextBox.Name = "queryError";
@@ -165,8 +158,8 @@ namespace DBQueryConstructor
                 errorTextBox.Dock = DockStyle.Fill;
                 errorTextBox.Text = ex.Message;
 
+                queryConstructorMiscResultDataGrid.Visible = false;
                 queryConstructorMiscResultTabPage.Controls.Add(errorTextBox);
-                queryConstructorMiscResultInfoRowCountLabel.Text = "Ошибка";
             }
             finally
             {
@@ -180,7 +173,7 @@ namespace DBQueryConstructor
         {
             _QueryBuilder.Clear();
 
-            if(queryConstructorTableListView.Controls.Count == 0)
+            if (queryConstructorTableListView.Controls.Count == 0)
             {
                 queryConstructorQueryText.Text = null;
 
@@ -196,14 +189,14 @@ namespace DBQueryConstructor
 
             _QueryBuilder.AddMainTable(mainTable);
 
-            foreach(ColumnPanel currentColumn in columnPanels)
+            foreach (ColumnPanel currentColumn in columnPanels)
             {
-                if(!currentColumn.Model.TablePanel.ColumnEnable)
+                if (!currentColumn.Model.TablePanel.ColumnEnable)
                 {
                     continue;
                 }
 
-                if(!currentColumn.Model.Checked)
+                if (!currentColumn.Model.Checked)
                 {
                     continue;
                 }
@@ -211,9 +204,9 @@ namespace DBQueryConstructor
                 _QueryBuilder.AddColumn(currentColumn.Parameter);
             }
 
-            foreach(JoinPanel currentJoinPanel in joinPanels)
+            foreach (JoinPanel currentJoinPanel in joinPanels)
             {
-                if(!currentJoinPanel.Model.ColumnEnable)
+                if (!currentJoinPanel.Model.ColumnEnable)
                 {
                     continue;
                 }
@@ -221,14 +214,14 @@ namespace DBQueryConstructor
                 _QueryBuilder.AddJoin(currentJoinPanel.Parameter);
             }
 
-            foreach(ConditionPanel currentConditionPanel in conditionPanels)
+            foreach (ConditionPanel currentConditionPanel in conditionPanels)
             {
-                if(!currentConditionPanel.Model.ColumnEnable)
+                if (!currentConditionPanel.Model.ColumnEnable)
                 {
                     continue;
                 }
 
-                if(!currentConditionPanel.Parameter.Valid())
+                if (!currentConditionPanel.Parameter.Valid())
                 {
                     continue;
                 }
@@ -238,6 +231,5 @@ namespace DBQueryConstructor
 
             queryConstructorQueryText.Text = _QueryBuilder.Build();
         }
-        #endregion
     }
 }
