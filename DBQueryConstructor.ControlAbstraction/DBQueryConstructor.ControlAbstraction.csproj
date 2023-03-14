@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="DataGridViewBuffered.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="ListViewPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="ViewGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>
