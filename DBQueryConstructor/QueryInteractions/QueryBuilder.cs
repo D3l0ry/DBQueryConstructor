@@ -1,11 +1,17 @@
 ﻿using System.Text;
 
-using DBQueryConstructor.Database.Models;
+using DBQueryConstructor.Controls;
+using DBQueryConstructor.Controls.ColumnPanels;
+using DBQueryConstructor.Controls.ConditionPanels;
+using DBQueryConstructor.Controls.JoinPanels;
+using DBQueryConstructor.DatabaseInteractions.Models;
 
 namespace DBQueryConstructor.QueryInteractions
 {
     internal class QueryBuilder
     {
+        private const string START_QUERY = "SELECT ";
+
         private readonly StringBuilder _stringBuilder;
         private TableModel _mainTable;
         private readonly List<QueryField> _Columns;
@@ -14,7 +20,7 @@ namespace DBQueryConstructor.QueryInteractions
 
         public QueryBuilder()
         {
-            _stringBuilder = new StringBuilder("SELECT ");
+            _stringBuilder = new StringBuilder(START_QUERY);
             _Columns = new List<QueryField>();
             _Joins = new List<ForeignTableJoin>();
             _ConditionParameters = new List<QueryConditionParameter>();
@@ -52,6 +58,8 @@ namespace DBQueryConstructor.QueryInteractions
 
         private void AppendJoinArray()
         {
+            _Joins.Sort();
+
             for (int index = 0; index < _Joins.Count; index++)
             {
                 ForeignTableJoin currentForeignTable = _Joins[index];
@@ -68,6 +76,7 @@ namespace DBQueryConstructor.QueryInteractions
                 return;
             }
 
+            _ConditionParameters.Sort();
             _stringBuilder.Append("\r\nWHERE ");
 
             for (int index = 0; index < _ConditionParameters.Count; index++)
@@ -107,21 +116,22 @@ namespace DBQueryConstructor.QueryInteractions
             return this;
         }
 
-        public QueryBuilder RemoveColumn(QueryField tableColumn)
+        public QueryBuilder AddTableColumns(TablePanel tablePanel)
         {
-            if (tableColumn == null)
+            if (tablePanel == null)
             {
-                throw new ArgumentNullException(nameof(tableColumn));
+                throw new ArgumentNullException(nameof(tablePanel));
             }
 
-            _Columns.Remove(tableColumn);
+            foreach (ColumnPanel selectedColumnPanel in tablePanel.QueryColumns)
+            {
+                if (!selectedColumnPanel.Model.Checked)
+                {
+                    continue;
+                }
 
-            return this;
-        }
-
-        public QueryBuilder ClearColumns()
-        {
-            _Columns.Clear();
+                AddColumn(selectedColumnPanel.Parameter);
+            }
 
             return this;
         }
@@ -138,25 +148,6 @@ namespace DBQueryConstructor.QueryInteractions
             return this;
         }
 
-        public QueryBuilder RemoveJoin(ForeignTableJoin join)
-        {
-            if (join == null)
-            {
-                throw new ArgumentNullException(nameof(join));
-            }
-
-            _Joins.Remove(join);
-
-            return this;
-        }
-
-        public QueryBuilder ClearJoins()
-        {
-            _Joins.Clear();
-
-            return this;
-        }
-
         public QueryBuilder AddCondition(QueryConditionParameter conditionParameter)
         {
             if (conditionParameter == null)
@@ -169,6 +160,45 @@ namespace DBQueryConstructor.QueryInteractions
             return this;
         }
 
+        public QueryBuilder AddTableConditions(TablePanel tablePanel)
+        {
+            if (tablePanel == null)
+            {
+                throw new ArgumentNullException(nameof(tablePanel));
+            }
+
+            foreach (ConditionPanel currentCondition in tablePanel.QueryConditions)
+            {
+                AddCondition(currentCondition.Parameter);
+            }
+
+            return this;
+        }
+
+        public QueryBuilder RemoveColumn(QueryField tableColumn)
+        {
+            if (tableColumn == null)
+            {
+                throw new ArgumentNullException(nameof(tableColumn));
+            }
+
+            _Columns.Remove(tableColumn);
+
+            return this;
+        }
+
+        public QueryBuilder RemoveJoin(ForeignTableJoin join)
+        {
+            if (join == null)
+            {
+                throw new ArgumentNullException(nameof(join));
+            }
+
+            _Joins.Remove(join);
+
+            return this;
+        }
+
         public QueryBuilder RemoveCondition(QueryConditionParameter conditionParameter)
         {
             if (conditionParameter == null)
@@ -177,6 +207,20 @@ namespace DBQueryConstructor.QueryInteractions
             }
 
             _ConditionParameters.Remove(conditionParameter);
+
+            return this;
+        }
+
+        public QueryBuilder ClearColumns()
+        {
+            _Columns.Clear();
+
+            return this;
+        }
+
+        public QueryBuilder ClearJoins()
+        {
+            _Joins.Clear();
 
             return this;
         }
@@ -196,7 +240,7 @@ namespace DBQueryConstructor.QueryInteractions
             ClearJoins();
             ClearCondition();
 
-            _stringBuilder.Append("SELECT ");
+            _stringBuilder.Append(START_QUERY);
 
             return this;
         }
