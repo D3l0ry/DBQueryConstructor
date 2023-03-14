@@ -1,8 +1,20 @@
-﻿namespace DBQueryConstructor.Controls.ColumnPanels
+﻿using DBQueryConstructor.ControlAbstraction;
+
+namespace DBQueryConstructor.Controls.ColumnPanels
 {
     internal class ColumnListView : ListViewPanel<ColumnPanel>
     {
         public ColumnListView() : base() { }
+
+        protected override void OnDragEnter(DragEventArgs drgevent)
+        {
+            if (!drgevent.Data.GetDataPresent(typeof(TablePanel)))
+            {
+                return;
+            }
+
+            drgevent.Effect = DragDropEffects.Move;
+        }
 
         protected override void OnControlAdded(ControlEventArgs e)
         {

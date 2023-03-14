@@ -1,4 +1,4 @@
-﻿using DBQueryConstructor.QueryInteractions;
+﻿using DBQueryConstructor.ControlAbstraction;
 
 namespace DBQueryConstructor.Controls.ColumnPanels
 {
