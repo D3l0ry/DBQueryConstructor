@@ -1,4 +1,6 @@
-﻿namespace DBQueryConstructor.Controls.ConditionPanels
+﻿using DBQueryConstructor.ControlAbstraction;
+
+namespace DBQueryConstructor.Controls.ConditionPanels
 {
     internal class ConditionListView : ListViewPanel<ConditionPanel>
     {
@@ -6,29 +8,44 @@
 
         protected override void OnDragEnter(DragEventArgs drgevent)
         {
-            if (drgevent.Data.GetDataPresent(typeof(TablePanel)))
+            bool isDataTablePanel = drgevent.Data.GetDataPresent(typeof(TablePanel));
+
+            if (!isDataTablePanel)
             {
-                TablePanel selectedPanel = (TablePanel)drgevent.Data.GetData(typeof(TablePanel));
-
-                if (!selectedPanel.ColumnEnable)
-                {
-                    return;
-                }
-
-                drgevent.Effect = DragDropEffects.Move;
+                return;
             }
+
+            TablePanel selectedPanel = (TablePanel)drgevent.Data.GetData(typeof(TablePanel));
+
+            if (!selectedPanel.ColumnEnable)
+            {
+                return;
+            }
+
+            drgevent.Effect = DragDropEffects.Move;
         }
 
         protected override void OnDragDrop(DragEventArgs drgevent)
         {
-            if (drgevent.Data.GetData(typeof(TablePanel)) is TablePanel selectedTablePanel)
-            {
-                ConditionPanel newConditionPanel = new ConditionPanel(selectedTablePanel);
-                newConditionPanel.Dock = DockStyle.Top;
-                newConditionPanel.DataChanged += ConditionDataChanged;
+            TablePanel selectedPanel = (TablePanel)drgevent.Data.GetData(typeof(TablePanel));
+            ConditionPanel newConditionPanel = new ConditionPanel(selectedPanel);
 
-                Controls.Add(newConditionPanel);
+            newConditionPanel.Dock = DockStyle.Top;
+            newConditionPanel.DataChanged += ConditionDataChanged;
+
+            Controls.Add(newConditionPanel);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            int index = 0;
+
+            foreach (ConditionPanel currentPanel in Panels)
+            {
+                currentPanel.Parameter.Index = index++;
             }
+
+            base.OnPaint(e);
         }
 
         private void ConditionDataChanged(object sender, EventArgs e) => OnDataChanged();

@@ -1,4 +1,6 @@
-﻿using DBQueryConstructor.Database.Models;
+﻿using DBQueryConstructor.ControlAbstraction;
+using DBQueryConstructor.Controls.ConditionPanels;
+using DBQueryConstructor.DatabaseInteractions.Models;
 using DBQueryConstructor.QueryInteractions;
 
 namespace DBQueryConstructor.Controls
@@ -54,9 +56,9 @@ namespace DBQueryConstructor.Controls
             _ColumnComboBox.DropDownWidth = 300;
             _ColumnComboBox.Width = 200;
             _ColumnComboBox.Dock = DockStyle.Left;
-            _ColumnComboBox.DropDown += ColumnComboBox_DropDown;
             _ColumnComboBox.SelectedValueChanged += ColumnComboBox_SelectedValueChanged;
             _ColumnComboBox.SelectedValueChanged += ValueChanged;
+            _ColumnComboBox.Items.AddRange(Model.Model.Columns);
 
             _EqualComboBox.Items.AddRange(_Equals);
             _EqualComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -102,14 +104,6 @@ namespace DBQueryConstructor.Controls
         private void ConditionComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
             Parameter.Condition = (QueryConditionType)_ConditionComboBox.SelectedItem;
-        }
-
-        private void ColumnComboBox_DropDown(object sender, EventArgs e)
-        {
-            TableColumnModel[] columns = Model.Model.Columns;
-
-            _ColumnComboBox.Items.Clear();
-            _ColumnComboBox.Items.AddRange(columns);
         }
 
         private void ColumnComboBox_SelectedValueChanged(object sender, EventArgs e)
