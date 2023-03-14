@@ -1,6 +1,7 @@
-﻿using DBQueryConstructor.Controls.JoinPanels;
+﻿using DBQueryConstructor.ControlAbstraction;
+using DBQueryConstructor.Controls.JoinPanels;
 using DBQueryConstructor.Controls.TablePanels;
-using DBQueryConstructor.Database.Models;
+using DBQueryConstructor.DatabaseInteractions.Models;
 using DBQueryConstructor.QueryInteractions;
 
 namespace DBQueryConstructor.Controls
@@ -91,7 +92,7 @@ namespace DBQueryConstructor.Controls
         {
             TableColumnModel[] columns = Model.Model.Columns;
 
-            ((JoinListView)Parent).ClearJoinMainTableColumns(Text);
+            ((JoinListView)Parent).ClearJoinMainTableColumns(this);
 
             _QueryJoinTableSelectComboBox.SelectedIndex = -1;
             _QueryJoinMainTableSelectComboBox.SelectedIndex = -1;
@@ -103,7 +104,7 @@ namespace DBQueryConstructor.Controls
 
         private void QueryJoinTableSelectComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(_QueryJoinTableSelectComboBox.SelectedIndex == -1)
+            if (_QueryJoinTableSelectComboBox.SelectedIndex == -1)
             {
                 Parameter.JoinedColumnTable = null;
 
@@ -115,12 +116,12 @@ namespace DBQueryConstructor.Controls
 
         private void QueryJoinMainTableSelectComboBox_DropDown(object sender, EventArgs e)
         {
-            ((JoinListView)Parent).ClearJoinMainTableColumns(Text);
+            ((JoinListView)Parent).ClearJoinMainTableColumns(this);
 
             _QueryJoinMainTableSelectComboBox.SelectedIndex = -1;
             _QueryJoinMainTableSelectComboBox.Items.Clear();
 
-            if(_QueryJoinTableSelectComboBox.SelectedIndex == -1)
+            if (_QueryJoinTableSelectComboBox.SelectedIndex == -1)
             {
                 return;
             }
@@ -133,7 +134,7 @@ namespace DBQueryConstructor.Controls
             IEnumerable<TablePanel> tablePanels = ((TableListView)Model.Parent).Panels
                 .Where(currentPanel => currentPanel.Model.GetTableName() != selectedJoinColumn.GetTableName() && currentPanel.ColumnEnable);
 
-            if(Parent.Controls.Count > 1)
+            if (Parent.Controls.Count > 1)
             {
                 tablePanels = tablePanels.Where(currentPanel =>
                     joinPanels.Any(currentJoin => currentJoin.Model == currentPanel) ||
@@ -150,7 +151,7 @@ namespace DBQueryConstructor.Controls
 
         private void QueryJoinMainTableSelectComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            if(_QueryJoinMainTableSelectComboBox.SelectedIndex == -1)
+            if (_QueryJoinMainTableSelectComboBox.SelectedIndex == -1)
             {
                 Parameter.MainColumnTable = null;
 
@@ -174,10 +175,7 @@ namespace DBQueryConstructor.Controls
             Model.ColumnEnable = false;
             Model.Join = null;
 
-            ((JoinListView)Parent).ClearJoinMainTableColumns(Text);
-
             Parent.Controls.Remove(this);
-
             OnDataChanged();
         }
     }
