@@ -1,4 +1,4 @@
-﻿using DBQueryConstructor.Database.Models;
+﻿using DBQueryConstructor.DatabaseInteractions.Models;
 
 namespace DBQueryConstructor.Controls.DatabasePanels
 {

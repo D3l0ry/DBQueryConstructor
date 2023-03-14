@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Text;
 
-using DBQueryConstructor.Database.Models;
+using DBQueryConstructor.DatabaseInteractions.Models;
 using DBQueryConstructor.Properties;
 
 namespace DBQueryConstructor.Controls.DatabasePanels
@@ -93,7 +93,7 @@ namespace DBQueryConstructor.Controls.DatabasePanels
             TableModel[] tables = Program.UsedDatabase.Table.ToArray();
             TableColumnModel[] tablesColumns = Program.UsedDatabase.TableColumn.ToArray();
 
-            if(tablesColumns.Length == 0)
+            if (tablesColumns.Length == 0)
             {
                 return;
             }
@@ -103,12 +103,12 @@ namespace DBQueryConstructor.Controls.DatabasePanels
             IEnumerable<IGrouping<string, TableColumnModel>> tableGroup = tablesColumns
                 .GroupBy(currentColumn => $"{currentColumn.TableSchema}.{currentColumn.TableName}");
 
-            foreach(IGrouping<string, TableColumnModel> currentGroup in tableGroup)
+            foreach (IGrouping<string, TableColumnModel> currentGroup in tableGroup)
             {
                 TableModel selectedTable = tables
                     .FirstOrDefault(currentTable => $"{currentTable.Schema}.{currentTable.Name}" == currentGroup.Key);
 
-                if(selectedTable == null)
+                if (selectedTable == null)
                 {
                     continue;
                 }
@@ -123,11 +123,11 @@ namespace DBQueryConstructor.Controls.DatabasePanels
 
                 nodes.Add(tableTreeNode);
 
-                foreach(TableColumnModel currentColumn in currentGroup)
+                foreach (TableColumnModel currentColumn in currentGroup)
                 {
                     StringBuilder columnBuilder = new StringBuilder($"{currentColumn.Name} (");
 
-                    foreach(TableConstraintModel currentTableConstraint in selectedTableConstraints)
+                    foreach (TableConstraintModel currentTableConstraint in selectedTableConstraints)
                     {
                         ColumnConstraintModel selectedColumnConstraint = columnConstraints
                             .FirstOrDefault(currentColumnConstraint =>
@@ -136,7 +136,7 @@ namespace DBQueryConstructor.Controls.DatabasePanels
                                 currentColumnConstraint.ColumnName == currentColumn.Name &&
                                 currentColumnConstraint.Name == currentTableConstraint.Name);
 
-                        if(selectedColumnConstraint == null)
+                        if (selectedColumnConstraint == null)
                         {
                             continue;
                         }
@@ -169,7 +169,7 @@ namespace DBQueryConstructor.Controls.DatabasePanels
             ConnectionForm connectionForm = new ConnectionForm();
             DialogResult result = connectionForm.ShowDialog();
 
-            if(result == DialogResult.Cancel)
+            if (result == DialogResult.Cancel)
             {
                 return;
             }
@@ -182,7 +182,6 @@ namespace DBQueryConstructor.Controls.DatabasePanels
         private void CloseConnectionDatabaseToolStripButton_Click(object sender, EventArgs e)
         {
             _DatabaseTableTreeView.Nodes.Clear();
-
             OnClosedConnection();
 
             Program.UsedDatabase?.Dispose();
@@ -191,25 +190,29 @@ namespace DBQueryConstructor.Controls.DatabasePanels
 
         private void DatabaseTableTreeView_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if(e.Item is TableTreeNode)
+            if (e.Item is not TableTreeNode)
             {
-                DoDragDrop(e.Item, DragDropEffects.Move);
+                return;
             }
+
+            DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
         private void DatabaseTableTreeView_DragEnter(object sender, DragEventArgs e)
         {
-            if(e.Data.GetDataPresent(typeof(TablePanel)))
+            if (!e.Data.GetDataPresent(typeof(TablePanel)))
             {
-                TablePanel selectedTablePanel = (TablePanel)e.Data.GetData(typeof(TablePanel));
-
-                if(selectedTablePanel.Parameter)
-                {
-                    return;
-                }
-
-                e.Effect = DragDropEffects.Move;
+                return;
             }
+
+            TablePanel selectedTablePanel = (TablePanel)e.Data.GetData(typeof(TablePanel));
+
+            if (selectedTablePanel.Parameter)
+            {
+                return;
+            }
+
+            e.Effect = DragDropEffects.Move;
         }
 
         private void DatabaseTableTreeView_DragDrop(object sender, DragEventArgs e) => TableDragDrop?.Invoke(sender, e);
