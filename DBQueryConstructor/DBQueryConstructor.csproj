@@ -13,8 +13,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Handy.MsSql" Version="1.0.4" />
+    <PackageReference Include="Handy.MsSql" Version="1.0.5" />
     <PackageReference Include="HandyORM" Version="1.0.17.2" />
+    <PackageReference Include="RegistrySerialization" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DBQueryConstructor.ControlAbstraction\DBQueryConstructor.ControlAbstraction.csproj" />
+    <ProjectReference Include="..\DBQueryConstructor.DatabaseInteractions\DBQueryConstructor.DatabaseInteractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,11 +29,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -35,13 +36,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
 
 </Project>

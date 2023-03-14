@@ -1,4 +1,6 @@
-﻿namespace DBQueryConstructor
+﻿using DBQueryConstructor.ControlAbstraction;
+
+namespace DBQueryConstructor
 {
     partial class MainForm
     {
@@ -35,6 +37,8 @@
             this.queryTabPage1 = new System.Windows.Forms.TabPage();
             this.queryTabPageSplitContainer = new System.Windows.Forms.SplitContainer();
             this.queryConstructorTableListView = new DBQueryConstructor.Controls.TablePanels.TableListView();
+            this.queryConstructorInteractionsTabControl = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.queryConstructorMiscTabControl = new System.Windows.Forms.TabControl();
             this.queryConstructorMiscFieldTabPage = new System.Windows.Forms.TabPage();
             this.queryConstructorMiscFieldListView = new DBQueryConstructor.Controls.ColumnPanels.ColumnListView();
@@ -42,12 +46,10 @@
             this.queryConstructorMiscJoinListView = new DBQueryConstructor.Controls.JoinPanels.JoinListView();
             this.queryConstructorMiscConditionTabPage = new System.Windows.Forms.TabPage();
             this.queryConstructorMiscConditionListView = new DBQueryConstructor.Controls.ConditionPanels.ConditionListView();
-            this.queryConstructorMiscQueryTextTabPage = new System.Windows.Forms.TabPage();
+            this.queryConstructorMiscQueryTabPage = new System.Windows.Forms.TabPage();
             this.queryConstructorQueryText = new System.Windows.Forms.TextBox();
-            this.queryConsturctorQueryToolStrip = new System.Windows.Forms.ToolStrip();
-            this.queryConstructorQueryToolExecuteButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorMiscResultTabPage = new System.Windows.Forms.TabPage();
-            this.queryConstructorMiscResultDataGrid = new DBQueryConstructor.Controls.DataGridViewBuffered();
+            this.queryConstructorMiscResultDataGrid = new DataGridViewBuffered();
             this.queryConstructorMiscResultToolStrip = new System.Windows.Forms.ToolStrip();
             this.queryConstructorMiscResultRowCountLabel = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -55,18 +57,20 @@
             this.databasePanel = new DBQueryConstructor.Controls.DatabasePanels.DatabasePanel();
             this.queryConstructorToolStrip = new System.Windows.Forms.ToolStrip();
             this.clearConstructorToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.queryConstructorQueryExecuteButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorTabControl.SuspendLayout();
             this.queryTabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.queryTabPageSplitContainer)).BeginInit();
             this.queryTabPageSplitContainer.Panel1.SuspendLayout();
             this.queryTabPageSplitContainer.Panel2.SuspendLayout();
             this.queryTabPageSplitContainer.SuspendLayout();
+            this.queryConstructorInteractionsTabControl.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.queryConstructorMiscTabControl.SuspendLayout();
             this.queryConstructorMiscFieldTabPage.SuspendLayout();
             this.queryConstructorMiscJoinTabPage.SuspendLayout();
             this.queryConstructorMiscConditionTabPage.SuspendLayout();
-            this.queryConstructorMiscQueryTextTabPage.SuspendLayout();
-            this.queryConsturctorQueryToolStrip.SuspendLayout();
+            this.queryConstructorMiscQueryTabPage.SuspendLayout();
             this.queryConstructorMiscResultTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.queryConstructorMiscResultDataGrid)).BeginInit();
             this.queryConstructorMiscResultToolStrip.SuspendLayout();
@@ -124,7 +128,7 @@
             // 
             // queryTabPageSplitContainer.Panel2
             // 
-            this.queryTabPageSplitContainer.Panel2.Controls.Add(this.queryConstructorMiscTabControl);
+            this.queryTabPageSplitContainer.Panel2.Controls.Add(this.queryConstructorInteractionsTabControl);
             this.queryTabPageSplitContainer.Size = new System.Drawing.Size(965, 452);
             this.queryTabPageSplitContainer.SplitterDistance = 253;
             this.queryTabPageSplitContainer.SplitterWidth = 7;
@@ -151,19 +155,41 @@
             this.queryConstructorTableListView.DataChanged += new System.EventHandler(this.QueryConstructorTableListView_DataChanged);
             this.queryConstructorTableListView.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.QueryConstructorTableListView_ControlRemoved);
             // 
+            // queryConstructorInteractionsTabControl
+            // 
+            this.queryConstructorInteractionsTabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.queryConstructorInteractionsTabControl.Controls.Add(this.tabPage1);
+            this.queryConstructorInteractionsTabControl.Controls.Add(this.queryConstructorMiscQueryTabPage);
+            this.queryConstructorInteractionsTabControl.Controls.Add(this.queryConstructorMiscResultTabPage);
+            this.queryConstructorInteractionsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.queryConstructorInteractionsTabControl.Location = new System.Drawing.Point(0, 0);
+            this.queryConstructorInteractionsTabControl.Name = "queryConstructorInteractionsTabControl";
+            this.queryConstructorInteractionsTabControl.SelectedIndex = 0;
+            this.queryConstructorInteractionsTabControl.Size = new System.Drawing.Size(963, 190);
+            this.queryConstructorInteractionsTabControl.TabIndex = 1;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.queryConstructorMiscTabControl);
+            this.tabPage1.Location = new System.Drawing.Point(4, 4);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(955, 164);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Конструктор";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
             // queryConstructorMiscTabControl
             // 
             this.queryConstructorMiscTabControl.Controls.Add(this.queryConstructorMiscFieldTabPage);
             this.queryConstructorMiscTabControl.Controls.Add(this.queryConstructorMiscJoinTabPage);
             this.queryConstructorMiscTabControl.Controls.Add(this.queryConstructorMiscConditionTabPage);
-            this.queryConstructorMiscTabControl.Controls.Add(this.queryConstructorMiscQueryTextTabPage);
-            this.queryConstructorMiscTabControl.Controls.Add(this.queryConstructorMiscResultTabPage);
             this.queryConstructorMiscTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.queryConstructorMiscTabControl.Location = new System.Drawing.Point(0, 0);
+            this.queryConstructorMiscTabControl.Location = new System.Drawing.Point(3, 3);
             this.queryConstructorMiscTabControl.Name = "queryConstructorMiscTabControl";
             this.queryConstructorMiscTabControl.Padding = new System.Drawing.Point(10, 3);
             this.queryConstructorMiscTabControl.SelectedIndex = 0;
-            this.queryConstructorMiscTabControl.Size = new System.Drawing.Size(963, 190);
+            this.queryConstructorMiscTabControl.Size = new System.Drawing.Size(949, 158);
             this.queryConstructorMiscTabControl.TabIndex = 0;
             // 
             // queryConstructorMiscFieldTabPage
@@ -171,7 +197,7 @@
             this.queryConstructorMiscFieldTabPage.Controls.Add(this.queryConstructorMiscFieldListView);
             this.queryConstructorMiscFieldTabPage.Location = new System.Drawing.Point(4, 22);
             this.queryConstructorMiscFieldTabPage.Name = "queryConstructorMiscFieldTabPage";
-            this.queryConstructorMiscFieldTabPage.Size = new System.Drawing.Size(955, 164);
+            this.queryConstructorMiscFieldTabPage.Size = new System.Drawing.Size(941, 132);
             this.queryConstructorMiscFieldTabPage.TabIndex = 0;
             this.queryConstructorMiscFieldTabPage.Text = "Поля";
             this.queryConstructorMiscFieldTabPage.UseVisualStyleBackColor = true;
@@ -186,7 +212,7 @@
             this.queryConstructorMiscFieldListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.queryConstructorMiscFieldListView.Location = new System.Drawing.Point(0, 0);
             this.queryConstructorMiscFieldListView.Name = "queryConstructorMiscFieldListView";
-            this.queryConstructorMiscFieldListView.Size = new System.Drawing.Size(955, 164);
+            this.queryConstructorMiscFieldListView.Size = new System.Drawing.Size(941, 132);
             this.queryConstructorMiscFieldListView.TabIndex = 0;
             this.queryConstructorMiscFieldListView.DataChanged += new System.EventHandler(this.QueryConstructorMiscListView_DataChanged);
             // 
@@ -197,8 +223,7 @@
             this.queryConstructorMiscJoinTabPage.Controls.Add(this.queryConstructorMiscJoinListView);
             this.queryConstructorMiscJoinTabPage.Location = new System.Drawing.Point(4, 22);
             this.queryConstructorMiscJoinTabPage.Name = "queryConstructorMiscJoinTabPage";
-            this.queryConstructorMiscJoinTabPage.Padding = new System.Windows.Forms.Padding(1);
-            this.queryConstructorMiscJoinTabPage.Size = new System.Drawing.Size(955, 164);
+            this.queryConstructorMiscJoinTabPage.Size = new System.Drawing.Size(941, 132);
             this.queryConstructorMiscJoinTabPage.TabIndex = 2;
             this.queryConstructorMiscJoinTabPage.Text = "Присоединения";
             this.queryConstructorMiscJoinTabPage.UseVisualStyleBackColor = true;
@@ -209,9 +234,9 @@
             this.queryConstructorMiscJoinListView.AutoScroll = true;
             this.queryConstructorMiscJoinListView.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.queryConstructorMiscJoinListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.queryConstructorMiscJoinListView.Location = new System.Drawing.Point(1, 1);
+            this.queryConstructorMiscJoinListView.Location = new System.Drawing.Point(0, 0);
             this.queryConstructorMiscJoinListView.Name = "queryConstructorMiscJoinListView";
-            this.queryConstructorMiscJoinListView.Size = new System.Drawing.Size(953, 162);
+            this.queryConstructorMiscJoinListView.Size = new System.Drawing.Size(941, 132);
             this.queryConstructorMiscJoinListView.TabIndex = 0;
             this.queryConstructorMiscJoinListView.DataChanged += new System.EventHandler(this.QueryConstructorMiscListView_DataChanged);
             // 
@@ -221,7 +246,7 @@
             this.queryConstructorMiscConditionTabPage.Controls.Add(this.queryConstructorMiscConditionListView);
             this.queryConstructorMiscConditionTabPage.Location = new System.Drawing.Point(4, 22);
             this.queryConstructorMiscConditionTabPage.Name = "queryConstructorMiscConditionTabPage";
-            this.queryConstructorMiscConditionTabPage.Size = new System.Drawing.Size(955, 164);
+            this.queryConstructorMiscConditionTabPage.Size = new System.Drawing.Size(941, 132);
             this.queryConstructorMiscConditionTabPage.TabIndex = 1;
             this.queryConstructorMiscConditionTabPage.Text = "Условия";
             this.queryConstructorMiscConditionTabPage.UseVisualStyleBackColor = true;
@@ -234,63 +259,40 @@
             this.queryConstructorMiscConditionListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.queryConstructorMiscConditionListView.Location = new System.Drawing.Point(0, 0);
             this.queryConstructorMiscConditionListView.Name = "queryConstructorMiscConditionListView";
-            this.queryConstructorMiscConditionListView.Size = new System.Drawing.Size(955, 164);
+            this.queryConstructorMiscConditionListView.Size = new System.Drawing.Size(941, 132);
             this.queryConstructorMiscConditionListView.TabIndex = 0;
             this.queryConstructorMiscConditionListView.DataChanged += new System.EventHandler(this.QueryConstructorMiscListView_DataChanged);
             // 
-            // queryConstructorMiscQueryTextTabPage
+            // queryConstructorMiscQueryTabPage
             // 
-            this.queryConstructorMiscQueryTextTabPage.Controls.Add(this.queryConstructorQueryText);
-            this.queryConstructorMiscQueryTextTabPage.Controls.Add(this.queryConsturctorQueryToolStrip);
-            this.queryConstructorMiscQueryTextTabPage.Location = new System.Drawing.Point(4, 22);
-            this.queryConstructorMiscQueryTextTabPage.Name = "queryConstructorMiscQueryTextTabPage";
-            this.queryConstructorMiscQueryTextTabPage.Size = new System.Drawing.Size(955, 164);
-            this.queryConstructorMiscQueryTextTabPage.TabIndex = 3;
-            this.queryConstructorMiscQueryTextTabPage.Text = "Запрос";
-            this.queryConstructorMiscQueryTextTabPage.UseVisualStyleBackColor = true;
+            this.queryConstructorMiscQueryTabPage.Controls.Add(this.queryConstructorQueryText);
+            this.queryConstructorMiscQueryTabPage.Location = new System.Drawing.Point(4, 4);
+            this.queryConstructorMiscQueryTabPage.Name = "queryConstructorMiscQueryTabPage";
+            this.queryConstructorMiscQueryTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.queryConstructorMiscQueryTabPage.Size = new System.Drawing.Size(955, 164);
+            this.queryConstructorMiscQueryTabPage.TabIndex = 1;
+            this.queryConstructorMiscQueryTabPage.Text = "Запрос";
+            this.queryConstructorMiscQueryTabPage.UseVisualStyleBackColor = true;
             // 
             // queryConstructorQueryText
             // 
             this.queryConstructorQueryText.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.queryConstructorQueryText.Location = new System.Drawing.Point(0, 25);
+            this.queryConstructorQueryText.Location = new System.Drawing.Point(3, 3);
             this.queryConstructorQueryText.Multiline = true;
             this.queryConstructorQueryText.Name = "queryConstructorQueryText";
             this.queryConstructorQueryText.ReadOnly = true;
             this.queryConstructorQueryText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.queryConstructorQueryText.Size = new System.Drawing.Size(955, 139);
-            this.queryConstructorQueryText.TabIndex = 0;
-            // 
-            // queryConsturctorQueryToolStrip
-            // 
-            this.queryConsturctorQueryToolStrip.BackColor = System.Drawing.Color.Transparent;
-            this.queryConsturctorQueryToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.queryConsturctorQueryToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.queryConstructorQueryToolExecuteButton});
-            this.queryConsturctorQueryToolStrip.Location = new System.Drawing.Point(0, 0);
-            this.queryConsturctorQueryToolStrip.Name = "queryConsturctorQueryToolStrip";
-            this.queryConsturctorQueryToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.queryConsturctorQueryToolStrip.Size = new System.Drawing.Size(955, 25);
-            this.queryConsturctorQueryToolStrip.TabIndex = 1;
-            this.queryConsturctorQueryToolStrip.Text = "toolStrip1";
-            // 
-            // queryConstructorQueryToolExecuteButton
-            // 
-            this.queryConstructorQueryToolExecuteButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.queryConstructorQueryToolExecuteButton.Image = global::DBQueryConstructor.Properties.Resources.play;
-            this.queryConstructorQueryToolExecuteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.queryConstructorQueryToolExecuteButton.Name = "queryConstructorQueryToolExecuteButton";
-            this.queryConstructorQueryToolExecuteButton.Size = new System.Drawing.Size(23, 22);
-            this.queryConstructorQueryToolExecuteButton.Text = "Выполнть";
-            this.queryConstructorQueryToolExecuteButton.Click += new System.EventHandler(this.QueryConstructorQueryToolExecuteButton_Click);
+            this.queryConstructorQueryText.Size = new System.Drawing.Size(949, 158);
+            this.queryConstructorQueryText.TabIndex = 2;
             // 
             // queryConstructorMiscResultTabPage
             // 
             this.queryConstructorMiscResultTabPage.Controls.Add(this.queryConstructorMiscResultDataGrid);
             this.queryConstructorMiscResultTabPage.Controls.Add(this.queryConstructorMiscResultToolStrip);
-            this.queryConstructorMiscResultTabPage.Location = new System.Drawing.Point(4, 22);
+            this.queryConstructorMiscResultTabPage.Location = new System.Drawing.Point(4, 4);
             this.queryConstructorMiscResultTabPage.Name = "queryConstructorMiscResultTabPage";
             this.queryConstructorMiscResultTabPage.Size = new System.Drawing.Size(955, 164);
-            this.queryConstructorMiscResultTabPage.TabIndex = 4;
+            this.queryConstructorMiscResultTabPage.TabIndex = 2;
             this.queryConstructorMiscResultTabPage.Text = "Результат";
             this.queryConstructorMiscResultTabPage.UseVisualStyleBackColor = true;
             // 
@@ -299,11 +301,9 @@
             this.queryConstructorMiscResultDataGrid.AllowUserToAddRows = false;
             this.queryConstructorMiscResultDataGrid.AllowUserToDeleteRows = false;
             this.queryConstructorMiscResultDataGrid.AllowUserToResizeRows = false;
-            this.queryConstructorMiscResultDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
             this.queryConstructorMiscResultDataGrid.BackgroundColor = System.Drawing.Color.White;
             this.queryConstructorMiscResultDataGrid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
-            this.queryConstructorMiscResultDataGrid.ColumnHeadersHeight = 25;
-            this.queryConstructorMiscResultDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.queryConstructorMiscResultDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.queryConstructorMiscResultDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.queryConstructorMiscResultDataGrid.GridColor = System.Drawing.Color.WhiteSmoke;
             this.queryConstructorMiscResultDataGrid.Location = new System.Drawing.Point(0, 0);
@@ -312,28 +312,31 @@
             this.queryConstructorMiscResultDataGrid.RowTemplate.Height = 23;
             this.queryConstructorMiscResultDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.queryConstructorMiscResultDataGrid.Size = new System.Drawing.Size(955, 139);
-            this.queryConstructorMiscResultDataGrid.TabIndex = 1;
+            this.queryConstructorMiscResultDataGrid.TabIndex = 3;
             // 
             // queryConstructorMiscResultToolStrip
             // 
             this.queryConstructorMiscResultToolStrip.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.queryConstructorMiscResultToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.queryConstructorMiscResultToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.queryConstructorMiscResultRowCountLabel,
             this.toolStripLabel1});
             this.queryConstructorMiscResultToolStrip.Location = new System.Drawing.Point(0, 139);
             this.queryConstructorMiscResultToolStrip.Name = "queryConstructorMiscResultToolStrip";
-            this.queryConstructorMiscResultToolStrip.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.queryConstructorMiscResultToolStrip.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.queryConstructorMiscResultToolStrip.Size = new System.Drawing.Size(955, 25);
-            this.queryConstructorMiscResultToolStrip.TabIndex = 0;
+            this.queryConstructorMiscResultToolStrip.TabIndex = 2;
             this.queryConstructorMiscResultToolStrip.Text = "toolStrip1";
             // 
             // queryConstructorMiscResultRowCountLabel
             // 
+            this.queryConstructorMiscResultRowCountLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.queryConstructorMiscResultRowCountLabel.Name = "queryConstructorMiscResultRowCountLabel";
             this.queryConstructorMiscResultRowCountLabel.Size = new System.Drawing.Size(0, 22);
             // 
             // toolStripLabel1
             // 
+            this.toolStripLabel1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripLabel1.Name = "toolStripLabel1";
             this.toolStripLabel1.Size = new System.Drawing.Size(99, 22);
             this.toolStripLabel1.Text = "Количество строк";
@@ -372,22 +375,33 @@
             // 
             this.queryConstructorToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.queryConstructorToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearConstructorToolStripButton});
+            this.clearConstructorToolStripButton,
+            this.queryConstructorQueryExecuteButton});
             this.queryConstructorToolStrip.Location = new System.Drawing.Point(0, 0);
             this.queryConstructorToolStrip.Name = "queryConstructorToolStrip";
-            this.queryConstructorToolStrip.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.queryConstructorToolStrip.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.queryConstructorToolStrip.Size = new System.Drawing.Size(979, 25);
             this.queryConstructorToolStrip.TabIndex = 2;
             this.queryConstructorToolStrip.Text = "toolStrip1";
             // 
             // clearConstructorToolStripButton
             // 
+            this.clearConstructorToolStripButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.clearConstructorToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("clearConstructorToolStripButton.Image")));
             this.clearConstructorToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.clearConstructorToolStripButton.Name = "clearConstructorToolStripButton";
             this.clearConstructorToolStripButton.Size = new System.Drawing.Size(144, 22);
             this.clearConstructorToolStripButton.Text = "Очистить конструктор";
             this.clearConstructorToolStripButton.Click += new System.EventHandler(this.ClearConstructorToolStripButton_Click);
+            // 
+            // queryConstructorQueryExecuteButton
+            // 
+            this.queryConstructorQueryExecuteButton.Image = global::DBQueryConstructor.Properties.Resources.play;
+            this.queryConstructorQueryExecuteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.queryConstructorQueryExecuteButton.Name = "queryConstructorQueryExecuteButton";
+            this.queryConstructorQueryExecuteButton.Size = new System.Drawing.Size(83, 22);
+            this.queryConstructorQueryExecuteButton.Text = "Выполнить";
+            this.queryConstructorQueryExecuteButton.Click += new System.EventHandler(this.QueryConstructorExecuteButton_Click);
             // 
             // MainForm
             // 
@@ -406,14 +420,14 @@
             this.queryTabPageSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.queryTabPageSplitContainer)).EndInit();
             this.queryTabPageSplitContainer.ResumeLayout(false);
+            this.queryConstructorInteractionsTabControl.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.queryConstructorMiscTabControl.ResumeLayout(false);
             this.queryConstructorMiscFieldTabPage.ResumeLayout(false);
             this.queryConstructorMiscJoinTabPage.ResumeLayout(false);
             this.queryConstructorMiscConditionTabPage.ResumeLayout(false);
-            this.queryConstructorMiscQueryTextTabPage.ResumeLayout(false);
-            this.queryConstructorMiscQueryTextTabPage.PerformLayout();
-            this.queryConsturctorQueryToolStrip.ResumeLayout(false);
-            this.queryConsturctorQueryToolStrip.PerformLayout();
+            this.queryConstructorMiscQueryTabPage.ResumeLayout(false);
+            this.queryConstructorMiscQueryTabPage.PerformLayout();
             this.queryConstructorMiscResultTabPage.ResumeLayout(false);
             this.queryConstructorMiscResultTabPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.queryConstructorMiscResultDataGrid)).EndInit();
@@ -438,12 +452,7 @@
         private TabControl queryConstructorMiscTabControl;
         private TabPage queryConstructorMiscFieldTabPage;
         private TabPage queryConstructorMiscConditionTabPage;
-        private TabPage queryConstructorMiscQueryTextTabPage;
-        private TextBox queryConstructorQueryText;
-        private TabPage queryConstructorMiscResultTabPage;
         internal TabPage queryConstructorMiscJoinTabPage;
-        private ToolStrip queryConsturctorQueryToolStrip;
-        private ToolStripButton queryConstructorQueryToolExecuteButton;
         internal Controls.TablePanels.TableListView queryConstructorTableListView;
         private Controls.JoinPanels.JoinListView queryConstructorMiscJoinListView;
         private Controls.ConditionPanels.ConditionListView queryConstructorMiscConditionListView;
@@ -452,9 +461,15 @@
         private Controls.DatabasePanels.DatabasePanel databasePanel;
         private ToolStrip queryConstructorToolStrip;
         private ToolStripButton clearConstructorToolStripButton;
+        private TabControl queryConstructorInteractionsTabControl;
+        private TabPage tabPage1;
+        private TabPage queryConstructorMiscQueryTabPage;
+        private TextBox queryConstructorQueryText;
+        private TabPage queryConstructorMiscResultTabPage;
+        private DataGridViewBuffered queryConstructorMiscResultDataGrid;
         private ToolStrip queryConstructorMiscResultToolStrip;
-        private Controls.DataGridViewBuffered queryConstructorMiscResultDataGrid;
         private ToolStripLabel queryConstructorMiscResultRowCountLabel;
         private ToolStripLabel toolStripLabel1;
+        private ToolStripButton queryConstructorQueryExecuteButton;
     }
 }

@@ -2,8 +2,6 @@ using System.Data.Common;
 
 using DBQueryConstructor.Controls;
 using DBQueryConstructor.Controls.ColumnPanels;
-using DBQueryConstructor.Controls.TablePanels;
-using DBQueryConstructor.Database.Models;
 using DBQueryConstructor.QueryInteractions;
 
 using Handy;
@@ -48,13 +46,17 @@ namespace DBQueryConstructor
         private void DatabasePanel_TableDragDrop(object sender, DragEventArgs e)
         {
             TablePanel selectedTableNode = (TablePanel)e.Data.GetData(typeof(TablePanel));
+
             queryConstructorTableListView.Controls.Remove(selectedTableNode);
         }
 
         private void ClearConstructorToolStripButton_Click(object sender, EventArgs e)
         {
+            const string message = "Вы уверены, что хотите очистить конструктор?";
+            const string title = "Очистка конструктора";
+
             DialogResult result = MessageBox
-                .Show("Вы уверены, что хотите очистить конструктор?", "Очистка конструктора", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                .Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.No)
             {
@@ -85,8 +87,7 @@ namespace DBQueryConstructor
 
         private void QueryConstructorTableListView_DataChanged(object sender, EventArgs e)
         {
-            TableListView tableListView = (TableListView)sender;
-            ColumnPanel[] queryColumns = tableListView.Panels.SelectMany(currentPanel => currentPanel.QueryColumns)
+            ColumnPanel[] queryColumns = queryConstructorTableListView.Panels.SelectMany(currentPanel => currentPanel.QueryColumns)
                 .Where(currentColumn => currentColumn.Model.Checked)
                 .ToArray();
 
@@ -98,7 +99,7 @@ namespace DBQueryConstructor
 
         private void QueryConstructorMiscListView_DataChanged(object sender, EventArgs e) => GenerateQuery();
 
-        private void QueryConstructorQueryToolExecuteButton_Click(object sender, EventArgs e)
+        private void QueryConstructorExecuteButton_Click(object sender, EventArgs e)
         {
             queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryError");
             queryConstructorMiscResultDataGrid.Visible = true;
@@ -124,6 +125,7 @@ namespace DBQueryConstructor
                 {
                     DataGridViewColumn viewColumn = new DataGridViewColumn();
                     DataGridViewTextBoxCell cell = new DataGridViewTextBoxCell();
+
                     viewColumn.Name = dataReader.GetName(index);
                     viewColumn.CellTemplate = cell;
 
@@ -132,14 +134,9 @@ namespace DBQueryConstructor
 
                 while (dataReader.Read())
                 {
-                    List<object> values = new List<object>();
+                    object[] values = new object[dataReader.FieldCount];
 
-                    for (int index = 0; index < dataReader.FieldCount; index++)
-                    {
-                        object value = dataReader.GetValue(index);
-
-                        values.Add(value);
-                    }
+                    dataReader.GetValues(values);
 
                     int rowIndex = queryConstructorMiscResultDataGrid.Rows.Add(values.ToArray());
                     queryConstructorMiscResultDataGrid.Rows[rowIndex].HeaderCell.Value = rowNumber.ToString();
@@ -165,7 +162,7 @@ namespace DBQueryConstructor
             {
                 dataReader?.Close();
 
-                queryConstructorMiscTabControl.SelectedIndex = queryConstructorMiscTabControl.TabCount - 1;
+                queryConstructorInteractionsTabControl.SelectedIndex = queryConstructorInteractionsTabControl.TabCount - 1;
             }
         }
 
@@ -180,53 +177,25 @@ namespace DBQueryConstructor
                 return;
             }
 
-            IEnumerable<TablePanel> tablePanels = queryConstructorTableListView.Panels
-                .Where(currentTablePanel => currentTablePanel.ColumnEnable);
-            IEnumerable<ColumnPanel> columnPanels = queryConstructorMiscFieldListView.Panels;
-            IEnumerable<JoinPanel> joinPanels = queryConstructorMiscJoinListView.Panels;
-            IEnumerable<ConditionPanel> conditionPanels = queryConstructorMiscConditionListView.Panels;
-            TableModel mainTable = tablePanels.First(currentTable => currentTable.Parameter).Model;
-
-            _QueryBuilder.AddMainTable(mainTable);
-
-            foreach (ColumnPanel currentColumn in columnPanels)
+            foreach (TablePanel currentTablePanel in queryConstructorTableListView.Panels)
             {
-                if (!currentColumn.Model.TablePanel.ColumnEnable)
+                if (!currentTablePanel.ColumnEnable)
                 {
                     continue;
                 }
 
-                if (!currentColumn.Model.Checked)
+                if (currentTablePanel.Parameter)
                 {
-                    continue;
+                    _QueryBuilder.AddMainTable(currentTablePanel.Model);
                 }
 
-                _QueryBuilder.AddColumn(currentColumn.Parameter);
-            }
-
-            foreach (JoinPanel currentJoinPanel in joinPanels)
-            {
-                if (!currentJoinPanel.Model.ColumnEnable)
+                if (currentTablePanel.Join != null)
                 {
-                    continue;
+                    _QueryBuilder.AddJoin(currentTablePanel.Join.Parameter);
                 }
 
-                _QueryBuilder.AddJoin(currentJoinPanel.Parameter);
-            }
-
-            foreach (ConditionPanel currentConditionPanel in conditionPanels)
-            {
-                if (!currentConditionPanel.Model.ColumnEnable)
-                {
-                    continue;
-                }
-
-                if (!currentConditionPanel.Parameter.Valid())
-                {
-                    continue;
-                }
-
-                _QueryBuilder.AddCondition(currentConditionPanel.Parameter);
+                _QueryBuilder.AddTableColumns(currentTablePanel);
+                _QueryBuilder.AddTableConditions(currentTablePanel);
             }
 
             queryConstructorQueryText.Text = _QueryBuilder.Build();

@@ -1,4 +1,4 @@
-using DBQueryConstructor.Database;
+using DBQueryConstructor.DatabaseInteractions;
 
 namespace DBQueryConstructor
 {
