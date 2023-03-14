@@ -1,10 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 
+using DBQueryConstructor.ControlAbstraction;
 using DBQueryConstructor.Controls.ColumnPanels;
-using DBQueryConstructor.Database.Models;
+using DBQueryConstructor.DatabaseInteractions.Models;
 
 namespace DBQueryConstructor.Controls
 {
+    /// <summary>
+    /// Модель таблицы базы данных в виде панели
+    /// </summary>
+    /// <remarks>bool значение с именем Parameter обозначанет, что панель является главной</remarks>
     internal class TablePanel : ViewGroupBox<TableModel, bool>
     {
         private readonly Panel _ColumnPanel;
@@ -45,7 +50,7 @@ namespace DBQueryConstructor.Controls
         {
             List<ColumnPanel> labels = new List<ColumnPanel>();
 
-            foreach(ColumnCheckBox currentTablePanelCheckBox in Columns)
+            foreach (ColumnCheckBox currentTablePanelCheckBox in Columns)
             {
                 ColumnPanel newFieldLabel = new ColumnPanel(currentTablePanelCheckBox);
 
@@ -77,9 +82,9 @@ namespace DBQueryConstructor.Controls
             topPanelLabel.Text = Model.GetTableName();
             topPanelLabel.Dock = DockStyle.Top;
 
-            foreach(TableColumnModel currentColumn in Model.Columns)
+            foreach (TableColumnModel currentColumn in Model.Columns)
             {
-                ColumnCheckBox newColumnCheckBox = new ColumnCheckBox(this, currentColumn);
+                ColumnCheckBox newColumnCheckBox = new ColumnCheckBox(currentColumn);
                 newColumnCheckBox.Dock = DockStyle.Top;
                 newColumnCheckBox.Text = currentColumn.Name;
                 newColumnCheckBox.CheckedChanged += CheckBox_CheckedChanged;

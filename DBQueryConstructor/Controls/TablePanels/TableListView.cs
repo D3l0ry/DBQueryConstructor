@@ -1,4 +1,5 @@
-﻿using DBQueryConstructor.Controls.DatabasePanels;
+﻿using DBQueryConstructor.ControlAbstraction;
+using DBQueryConstructor.Controls.DatabasePanels;
 
 namespace DBQueryConstructor.Controls.TablePanels
 {
@@ -10,14 +11,14 @@ namespace DBQueryConstructor.Controls.TablePanels
         {
             Graphics graphics = e.Graphics;
 
-            if(Controls.Count > 0)
+            if (Controls.Count > 0)
             {
                 base.OnPaint(e);
 
                 return;
             }
 
-            string message = "Первая добавленная таблица является главной и не подлежит удалению";
+            const string message = "Первая добавленная таблица является главной и не подлежит удалению";
             Font textFont = new Font("Tahoma", 14);
             Brush lightGreen = Brushes.DimGray;
             SizeF messageMeasure = graphics.MeasureString(message, textFont);
@@ -30,29 +31,25 @@ namespace DBQueryConstructor.Controls.TablePanels
 
         protected override void OnDragEnter(DragEventArgs drgevent)
         {
-            if(drgevent.Data.GetDataPresent(typeof(TableTreeNode)))
+            if (!drgevent.Data.GetDataPresent(typeof(TableTreeNode)))
             {
-                drgevent.Effect = DragDropEffects.Move;
+                return;
             }
+
+            drgevent.Effect = DragDropEffects.Move;
         }
 
         protected override void OnDragDrop(DragEventArgs drgevent)
         {
             TableTreeNode selectedTableNode = (TableTreeNode)drgevent.Data.GetData(typeof(TableTreeNode));
 
-            if(selectedTableNode == null)
-            {
-                return;
-            }
-
-            bool isExists = Controls
-                .Cast<TablePanel>()
+            bool isExists = Panels
                 .Any(currentTablePanel => currentTablePanel.Model == selectedTableNode.Element);
 
-            if(isExists)
+            if (isExists)
             {
-                string message = "Такая таблица уже добавлена в конструктор!";
-                string title = "Ошибка добавления таблицы";
+                const string message = "Такая таблица уже добавлена в конструктор!";
+                const string title = "Ошибка добавления таблицы";
 
                 MessageBox
                     .Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
