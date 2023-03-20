@@ -49,7 +49,7 @@ namespace DBQueryConstructor
             this.queryConstructorMiscQueryTabPage = new System.Windows.Forms.TabPage();
             this.queryConstructorQueryText = new System.Windows.Forms.TextBox();
             this.queryConstructorMiscResultTabPage = new System.Windows.Forms.TabPage();
-            this.queryConstructorMiscResultDataGrid = new DataGridViewBuffered();
+            this.queryConstructorMiscResultDataGrid = new DBQueryConstructor.ControlAbstraction.DataGridViewBuffered();
             this.queryConstructorMiscResultToolStrip = new System.Windows.Forms.ToolStrip();
             this.queryConstructorMiscResultRowCountLabel = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -57,6 +57,8 @@ namespace DBQueryConstructor
             this.databasePanel = new DBQueryConstructor.Controls.DatabasePanels.DatabasePanel();
             this.queryConstructorToolStrip = new System.Windows.Forms.ToolStrip();
             this.clearConstructorToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.queryConstructorOpenToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.queryConstructorSaveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorQueryExecuteButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorTabControl.SuspendLayout();
             this.queryTabPage1.SuspendLayout();
@@ -369,13 +371,14 @@ namespace DBQueryConstructor
             this.databasePanel.Size = new System.Drawing.Size(200, 511);
             this.databasePanel.TabIndex = 0;
             this.databasePanel.CloseConnection += new System.EventHandler(this.DatabasePanel_CloseConnection);
-            this.databasePanel.TableDragDrop += new System.EventHandler<System.Windows.Forms.DragEventArgs>(this.DatabasePanel_TableDragDrop);
             // 
             // queryConstructorToolStrip
             // 
             this.queryConstructorToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.queryConstructorToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearConstructorToolStripButton,
+            this.queryConstructorOpenToolStripButton,
+            this.queryConstructorSaveToolStripButton,
             this.queryConstructorQueryExecuteButton});
             this.queryConstructorToolStrip.Location = new System.Drawing.Point(0, 0);
             this.queryConstructorToolStrip.Name = "queryConstructorToolStrip";
@@ -393,6 +396,25 @@ namespace DBQueryConstructor
             this.clearConstructorToolStripButton.Size = new System.Drawing.Size(144, 22);
             this.clearConstructorToolStripButton.Text = "Очистить конструктор";
             this.clearConstructorToolStripButton.Click += new System.EventHandler(this.ClearConstructorToolStripButton_Click);
+            // 
+            // queryConstructorOpenToolStripButton
+            // 
+            this.queryConstructorOpenToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("queryConstructorOpenToolStripButton.Image")));
+            this.queryConstructorOpenToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.queryConstructorOpenToolStripButton.Name = "queryConstructorOpenToolStripButton";
+            this.queryConstructorOpenToolStripButton.Size = new System.Drawing.Size(73, 22);
+            this.queryConstructorOpenToolStripButton.Text = "Открыть";
+            this.queryConstructorOpenToolStripButton.Click += new System.EventHandler(this.QueryConstructorOpenToolStripButton_Click);
+            // 
+            // queryConstructorSaveToolStripButton
+            // 
+            this.queryConstructorSaveToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("queryConstructorSaveToolStripButton.Image")));
+            this.queryConstructorSaveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.queryConstructorSaveToolStripButton.Name = "queryConstructorSaveToolStripButton";
+            this.queryConstructorSaveToolStripButton.Size = new System.Drawing.Size(82, 22);
+            this.queryConstructorSaveToolStripButton.Text = "Сохранить";
+            this.queryConstructorSaveToolStripButton.ToolTipText = "Сохранить";
+            this.queryConstructorSaveToolStripButton.Click += new System.EventHandler(this.QueryConstructorSaveToolStripButton_Click);
             // 
             // queryConstructorQueryExecuteButton
             // 
@@ -471,5 +493,7 @@ namespace DBQueryConstructor
         private ToolStripLabel queryConstructorMiscResultRowCountLabel;
         private ToolStripLabel toolStripLabel1;
         private ToolStripButton queryConstructorQueryExecuteButton;
+        private ToolStripButton queryConstructorSaveToolStripButton;
+        private ToolStripButton queryConstructorOpenToolStripButton;
     }
 }

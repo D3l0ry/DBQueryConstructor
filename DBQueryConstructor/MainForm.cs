@@ -1,204 +1,294 @@
 using System.Data.Common;
+using System.Text.Json;
 
 using DBQueryConstructor.Controls;
 using DBQueryConstructor.Controls.ColumnPanels;
+using DBQueryConstructor.Controls.ConditionPanels;
+using DBQueryConstructor.Controls.JoinPanels;
+using DBQueryConstructor.Controls.TablePanels;
 using DBQueryConstructor.QueryInteractions;
 
 using Handy;
 
-namespace DBQueryConstructor
+namespace DBQueryConstructor;
+
+public partial class MainForm : Form
 {
-    public partial class MainForm : Form
+    private readonly QueryBuilder _QueryBuilder;
+
+    public MainForm()
     {
-        private readonly QueryBuilder _QueryBuilder;
+        _QueryBuilder = new QueryBuilder();
 
-        public MainForm()
+        InitializeComponent();
+    }
+
+    protected override CreateParams CreateParams
+    {
+        get
         {
-            _QueryBuilder = new QueryBuilder();
+            CreateParams cp = base.CreateParams;
+            cp.ExStyle = 0x2000000;
 
-            InitializeComponent();
+            return cp;
+        }
+    }
+
+    private void ClearConstructor()
+    {
+        queryConstructorTableListView.Controls.Clear();
+        queryConstructorMiscFieldListView.Controls.Clear();
+        queryConstructorMiscJoinListView.Controls.Clear();
+        queryConstructorMiscConditionListView.Controls.Clear();
+        queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryDataResult");
+        queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryError");
+        queryConstructorQueryText.Text = null;
+    }
+
+    private void DatabasePanel_CloseConnection(object sender, EventArgs e) => ClearConstructor();
+
+    private void ClearConstructorToolStripButton_Click(object sender, EventArgs e)
+    {
+        const string message = "Вы уверены, что хотите очистить конструктор?";
+        const string title = "Очистка конструктора";
+
+        DialogResult result = MessageBox
+            .Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+        if (result == DialogResult.No)
+        {
+            return;
         }
 
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle = 0x2000000;
+        ClearConstructor();
+    }
 
-                return cp;
-            }
+    private void QueryConstructorTableListView_ControlRemoved(object sender, ControlEventArgs e)
+    {
+        TablePanel removedTablePanel = (TablePanel)e.Control;
+
+        queryConstructorMiscJoinListView.Controls.Remove(removedTablePanel.Join);
+
+        foreach (ColumnPanel currentTableColumnPanel in removedTablePanel.QueryColumns)
+        {
+            queryConstructorMiscFieldListView.Controls.Remove(currentTableColumnPanel);
         }
 
-        private void ClearConstructor()
+        foreach (ConditionPanel currentTableConditionPanel in removedTablePanel.QueryConditions)
         {
-            queryConstructorTableListView.Controls.Clear();
-            queryConstructorMiscFieldListView.Controls.Clear();
-            queryConstructorMiscJoinListView.Controls.Clear();
-            queryConstructorMiscConditionListView.Controls.Clear();
-            queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryDataResult");
-            queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryError");
-            queryConstructorQueryText.Text = null;
+            queryConstructorMiscConditionListView.Controls.Remove(currentTableConditionPanel);
         }
 
-        private void DatabasePanel_CloseConnection(object sender, EventArgs e) => ClearConstructor();
+        GenerateQuery();
+    }
 
-        private void DatabasePanel_TableDragDrop(object sender, DragEventArgs e)
+    private void QueryConstructorTableListView_DataChanged(object sender, EventArgs e)
+    {
+        ColumnPanel[] queryColumns = queryConstructorTableListView.Panels
+            .SelectMany(currentPanel => currentPanel.QueryColumns)
+            .Where(currentColumn => currentColumn.Model.Checked)
+            .ToArray();
+
+        queryConstructorMiscFieldListView.Controls.Clear();
+        queryConstructorMiscFieldListView.Controls.AddRange(queryColumns);
+
+        GenerateQuery();
+    }
+
+    private void QueryConstructorMiscListView_DataChanged(object sender, EventArgs e) => GenerateQuery();
+
+    private void QueryConstructorOpenToolStripButton_Click(object sender, EventArgs e)
+    {
+        ClearConstructor();
+
+        using FileStream storedFile = new FileStream("QueryStored.json", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        QueryStored stored = JsonSerializer.Deserialize<QueryStored>(storedFile);
+
+        if (stored == null)
         {
-            TablePanel selectedTableNode = (TablePanel)e.Data.GetData(typeof(TablePanel));
-
-            queryConstructorTableListView.Controls.Remove(selectedTableNode);
+            return;
         }
 
-        private void ClearConstructorToolStripButton_Click(object sender, EventArgs e)
+        foreach (TableParameter currentTable in stored.Tables)
         {
-            const string message = "Вы уверены, что хотите очистить конструктор?";
-            const string title = "Очистка конструктора";
+            TablePanel tablePanel = queryConstructorTableListView.CreateTablePanel(currentTable.Table);
 
-            DialogResult result = MessageBox
-                .Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.No)
+            foreach (QueryField currentField in stored.Columns)
             {
-                return;
-            }
+                ColumnCheckBox selectedCheckBox = tablePanel.Columns
+                    .FirstOrDefault(currentColumn =>
+                            currentColumn.Column.GetColumnName() == currentField.Column.GetColumnName());
 
-            ClearConstructor();
-        }
-
-        private void QueryConstructorTableListView_ControlRemoved(object sender, ControlEventArgs e)
-        {
-            TablePanel removedTablePanel = (TablePanel)e.Control;
-
-            queryConstructorMiscJoinListView.Controls.Remove(removedTablePanel.Join);
-
-            foreach (ColumnPanel currentTableColumnPanel in removedTablePanel.QueryColumns)
-            {
-                queryConstructorMiscFieldListView.Controls.Remove(currentTableColumnPanel);
-            }
-
-            foreach (ConditionPanel currentTableConditionPanel in removedTablePanel.QueryConditions)
-            {
-                queryConstructorMiscConditionListView.Controls.Remove(currentTableConditionPanel);
-            }
-
-            GenerateQuery();
-        }
-
-        private void QueryConstructorTableListView_DataChanged(object sender, EventArgs e)
-        {
-            ColumnPanel[] queryColumns = queryConstructorTableListView.Panels.SelectMany(currentPanel => currentPanel.QueryColumns)
-                .Where(currentColumn => currentColumn.Model.Checked)
-                .ToArray();
-
-            queryConstructorMiscFieldListView.Controls.Clear();
-            queryConstructorMiscFieldListView.Controls.AddRange(queryColumns);
-
-            GenerateQuery();
-        }
-
-        private void QueryConstructorMiscListView_DataChanged(object sender, EventArgs e) => GenerateQuery();
-
-        private void QueryConstructorExecuteButton_Click(object sender, EventArgs e)
-        {
-            queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryError");
-            queryConstructorMiscResultDataGrid.Visible = true;
-
-            if (string.IsNullOrWhiteSpace(queryConstructorQueryText.Text))
-            {
-                return;
-            }
-
-            queryConstructorMiscResultDataGrid.Rows.Clear();
-            queryConstructorMiscResultDataGrid.Columns.Clear();
-
-            DbCommand command = Program.UsedDatabase.Connection.CreateCommand();
-            command.CommandText = queryConstructorQueryText.Text;
-            DbDataReader dataReader = null;
-
-            try
-            {
-                int rowNumber = 1;
-                dataReader = command.ExecuteReader();
-
-                for (int index = 0; index < dataReader.FieldCount; index++)
-                {
-                    DataGridViewColumn viewColumn = new DataGridViewColumn();
-                    DataGridViewTextBoxCell cell = new DataGridViewTextBoxCell();
-
-                    viewColumn.Name = dataReader.GetName(index);
-                    viewColumn.CellTemplate = cell;
-
-                    queryConstructorMiscResultDataGrid.Columns.Add(viewColumn);
-                }
-
-                while (dataReader.Read())
-                {
-                    object[] values = new object[dataReader.FieldCount];
-
-                    dataReader.GetValues(values);
-
-                    int rowIndex = queryConstructorMiscResultDataGrid.Rows.Add(values.ToArray());
-                    queryConstructorMiscResultDataGrid.Rows[rowIndex].HeaderCell.Value = rowNumber.ToString();
-
-                    rowNumber++;
-                }
-
-                queryConstructorMiscResultRowCountLabel.Text = queryConstructorMiscResultDataGrid.RowCount.ToString();
-            }
-            catch (Exception ex)
-            {
-                TextBox errorTextBox = new TextBox();
-                errorTextBox.Name = "queryError";
-                errorTextBox.ReadOnly = true;
-                errorTextBox.Multiline = true;
-                errorTextBox.Dock = DockStyle.Fill;
-                errorTextBox.Text = ex.Message;
-
-                queryConstructorMiscResultDataGrid.Visible = false;
-                queryConstructorMiscResultTabPage.Controls.Add(errorTextBox);
-            }
-            finally
-            {
-                dataReader?.Close();
-
-                queryConstructorInteractionsTabControl.SelectedIndex = queryConstructorInteractionsTabControl.TabCount - 1;
-            }
-        }
-
-        private void GenerateQuery()
-        {
-            _QueryBuilder.Clear();
-
-            if (queryConstructorTableListView.Controls.Count == 0)
-            {
-                queryConstructorQueryText.Text = null;
-
-                return;
-            }
-
-            foreach (TablePanel currentTablePanel in queryConstructorTableListView.Panels)
-            {
-                if (!currentTablePanel.ColumnEnable)
+                if (selectedCheckBox == null)
                 {
                     continue;
                 }
 
-                if (currentTablePanel.Parameter)
-                {
-                    _QueryBuilder.AddMainTable(currentTablePanel.Model);
-                }
+                ColumnPanel selectedColumnPanel = tablePanel.QueryColumns
+                    .First(currentColumn =>
+                        currentColumn.Model == selectedCheckBox);
 
-                if (currentTablePanel.Join != null)
-                {
-                    _QueryBuilder.AddJoin(currentTablePanel.Join.Parameter);
-                }
-
-                _QueryBuilder.AddTableColumns(currentTablePanel);
-                _QueryBuilder.AddTableConditions(currentTablePanel);
+                selectedColumnPanel.Parameter = currentField;
+                selectedCheckBox.Checked = true;
             }
 
-            queryConstructorQueryText.Text = _QueryBuilder.Build();
+            queryConstructorTableListView.AddPanel(tablePanel);
         }
+
+        foreach (ForeignTableJoin currentJoin in stored.Joins)
+        {
+            TablePanel tablePanel = queryConstructorTableListView.Panels
+                .FirstOrDefault(currentTablePanel =>
+                    currentTablePanel.Model.GetTableName() == currentJoin.TableName);
+
+            if (tablePanel == null)
+            {
+                continue;
+            }
+
+            JoinPanel newJoin = queryConstructorMiscJoinListView.CreateJoinPanel(tablePanel);
+            newJoin.Parameter = currentJoin;
+
+            queryConstructorMiscJoinListView.AddPanel(newJoin);
+        }
+
+        foreach (QueryConditionParameter currentCondition in stored.Conditions)
+        {
+            TablePanel tablePanel = queryConstructorTableListView.Panels
+                .FirstOrDefault(currentTablePanel =>
+                    currentTablePanel.Model.GetTableName() == currentCondition.TableName);
+
+            if (tablePanel == null)
+            {
+                continue;
+            }
+
+            ConditionPanel newCondition = queryConstructorMiscConditionListView.CreateConditionPanel(tablePanel);
+            newCondition.Parameter = currentCondition;
+
+            queryConstructorMiscConditionListView.AddPanel(newCondition);
+        }
+    }
+
+    private void QueryConstructorSaveToolStripButton_Click(object sender, EventArgs e)
+    {
+        QueryStored stored = new QueryStored();
+
+        stored.Server = Program.UsedDatabase.Connection.DataSource;
+        stored.Database = Program.UsedDatabase.Connection.Database;
+        stored.Tables = queryConstructorTableListView.Panels.Select(x => x.Parameter).ToArray();
+        stored.Columns = queryConstructorMiscFieldListView.Panels.Select(x => x.Parameter).ToArray();
+        stored.Joins = queryConstructorMiscJoinListView.Panels.Select(x => x.Parameter).ToArray();
+        stored.Conditions = queryConstructorMiscConditionListView.Panels.Select(x => x.Parameter).ToArray();
+
+        using FileStream storedFile = new FileStream("QueryStored.json", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+        JsonSerializerOptions options = new JsonSerializerOptions();
+
+        options.WriteIndented = true;
+
+        JsonSerializer.Serialize(storedFile, stored, options);
+    }
+
+    private void QueryConstructorExecuteButton_Click(object sender, EventArgs e)
+    {
+        queryConstructorMiscResultDataGrid.Visible = true;
+
+        queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryError");
+        queryConstructorMiscResultDataGrid.Rows.Clear();
+        queryConstructorMiscResultDataGrid.Columns.Clear();
+
+        if (string.IsNullOrWhiteSpace(queryConstructorQueryText.Text))
+        {
+            return;
+        }
+
+        DbCommand command = Program.UsedDatabase.Connection.CreateCommand();
+        DbDataReader dataReader = null;
+
+        command.CommandText = queryConstructorQueryText.Text;
+
+        try
+        {
+            int rowNumber = 1;
+            dataReader = command.ExecuteReader();
+
+            for (int index = 0; index < dataReader.FieldCount; index++)
+            {
+                DataGridViewColumn viewColumn = new DataGridViewColumn();
+                DataGridViewTextBoxCell cell = new DataGridViewTextBoxCell();
+
+                viewColumn.Name = dataReader.GetName(index);
+                viewColumn.CellTemplate = cell;
+
+                queryConstructorMiscResultDataGrid.Columns.Add(viewColumn);
+            }
+
+            while (dataReader.Read())
+            {
+                object[] values = new object[dataReader.FieldCount];
+
+                dataReader.GetValues(values);
+
+                int rowIndex = queryConstructorMiscResultDataGrid.Rows.Add(values.ToArray());
+                queryConstructorMiscResultDataGrid.Rows[rowIndex].HeaderCell.Value = rowNumber.ToString();
+
+                rowNumber++;
+            }
+
+            queryConstructorMiscResultRowCountLabel.Text = queryConstructorMiscResultDataGrid.RowCount.ToString();
+        }
+        catch (Exception ex)
+        {
+            TextBox errorTextBox = new TextBox();
+            errorTextBox.Name = "queryError";
+            errorTextBox.ReadOnly = true;
+            errorTextBox.Multiline = true;
+            errorTextBox.Dock = DockStyle.Fill;
+            errorTextBox.Text = ex.Message;
+
+            queryConstructorMiscResultDataGrid.Visible = false;
+            queryConstructorMiscResultTabPage.Controls.Add(errorTextBox);
+        }
+        finally
+        {
+            dataReader?.Close();
+
+            queryConstructorInteractionsTabControl.SelectedIndex = queryConstructorInteractionsTabControl.TabCount - 1;
+        }
+    }
+
+    private void GenerateQuery()
+    {
+        _QueryBuilder.Clear();
+
+        if (queryConstructorTableListView.Controls.Count == 0)
+        {
+            queryConstructorQueryText.Text = null;
+
+            return;
+        }
+
+        foreach (TablePanel currentTablePanel in queryConstructorTableListView.Panels)
+        {
+            if (!currentTablePanel.ColumnEnable)
+            {
+                continue;
+            }
+
+            if (currentTablePanel.Parameter.IsMainTable)
+            {
+                _QueryBuilder.AddMainTable(currentTablePanel.Model);
+            }
+
+            if (currentTablePanel.Join != null)
+            {
+                _QueryBuilder.AddJoin(currentTablePanel.Join.Parameter);
+            }
+
+            _QueryBuilder.AddTableColumns(currentTablePanel);
+            _QueryBuilder.AddTableConditions(currentTablePanel);
+        }
+
+        queryConstructorQueryText.Text = _QueryBuilder.Build();
     }
 }
