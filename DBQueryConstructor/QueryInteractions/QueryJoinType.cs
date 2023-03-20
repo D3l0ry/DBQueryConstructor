@@ -1,8 +1,7 @@
-﻿namespace DBQueryConstructor.QueryInteractions
+﻿namespace DBQueryConstructor.QueryInteractions;
+
+internal enum QueryJoinType
 {
-    internal enum QueryJoinType
-    {
-        Join,
-        LeftJoin
-    }
+    Join,
+    LeftJoin
 }

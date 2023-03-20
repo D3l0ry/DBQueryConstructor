@@ -1,8 +1,7 @@
-﻿namespace DBQueryConstructor.QueryInteractions
+﻿namespace DBQueryConstructor.QueryInteractions;
+
+internal enum QueryConditionType
 {
-    internal enum QueryConditionType
-    {
-        Or,
-        And
-    }
+    Or,
+    And
 }
