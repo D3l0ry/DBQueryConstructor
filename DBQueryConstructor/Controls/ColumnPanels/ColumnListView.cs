@@ -1,29 +1,28 @@
 ﻿using DBQueryConstructor.ControlAbstraction;
 
-namespace DBQueryConstructor.Controls.ColumnPanels
+namespace DBQueryConstructor.Controls.ColumnPanels;
+
+internal class ColumnListView : ListViewPanel<ColumnPanel>
 {
-    internal class ColumnListView : ListViewPanel<ColumnPanel>
+    public ColumnListView() : base() { }
+
+    protected override void OnControlAdded(ControlEventArgs e)
     {
-        public ColumnListView() : base() { }
+        ColumnPanel newPanel = (ColumnPanel)e.Control;
+        newPanel.DataChanged += Panel_DataChanged;
 
-        protected override void OnDragEnter(DragEventArgs drgevent)
-        {
-            if (!drgevent.Data.GetDataPresent(typeof(TablePanel)))
-            {
-                return;
-            }
-
-            drgevent.Effect = DragDropEffects.Move;
-        }
-
-        protected override void OnControlAdded(ControlEventArgs e)
-        {
-            ColumnPanel newPanel = (ColumnPanel)e.Control;
-            newPanel.DataChanged += Panel_DataChanged;
-
-            base.OnControlAdded(e);
-        }
-
-        private void Panel_DataChanged(object sender, EventArgs e) => OnDataChanged();
+        base.OnControlAdded(e);
     }
+
+    public override void AddPanel(ColumnPanel panel)
+    {
+        if (panel == null)
+        {
+            throw new ArgumentNullException(nameof(panel));
+        }
+
+        Controls.Add(panel);
+    }
+
+    private void Panel_DataChanged(object sender, EventArgs e) => OnDataChanged();
 }
