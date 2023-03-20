@@ -3,20 +3,19 @@
 using Handy;
 using Handy.MsSql;
 
-namespace DBQueryConstructor.DatabaseInteractions
+namespace DBQueryConstructor.DatabaseInteractions;
+
+public class UsedDatabase : DatabaseContext
 {
-    public class UsedDatabase : DatabaseContext
-    {
-        public UsedDatabase(string connection) : base(connection) { }
+    public UsedDatabase(string connection) : base(connection) { }
 
-        public Table<TableModel> Table => GetTable<TableModel>();
+    public Table<TableModel> Table => GetTable<TableModel>();
 
-        public Table<TableColumnModel> TableColumn => GetTable<TableColumnModel>();
+    public Table<TableColumnModel> TableColumn => GetTable<TableColumnModel>();
 
-        public Table<TableConstraintModel> TableConstraint => GetTable<TableConstraintModel>();
+    public Table<TableConstraintModel> TableConstraint => GetTable<TableConstraintModel>();
 
-        public Table<ColumnConstraintModel> ColumnConstraint => GetTable<ColumnConstraintModel>();
+    public Table<ColumnConstraintModel> ColumnConstraint => GetTable<ColumnConstraintModel>();
 
-        protected override void OnConfigure(ContextOptionsBuilder options) => options.UseSqlServer();
-    }
+    protected override void OnConfigure(ContextOptionsBuilder options) => options.UseSqlServer();
 }
