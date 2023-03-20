@@ -6,252 +6,260 @@ using DBQueryConstructor.Controls.ConditionPanels;
 using DBQueryConstructor.Controls.JoinPanels;
 using DBQueryConstructor.DatabaseInteractions.Models;
 
-namespace DBQueryConstructor.QueryInteractions
+namespace DBQueryConstructor.QueryInteractions;
+
+internal class QueryBuilder
 {
-    internal class QueryBuilder
+    private const string START_QUERY = "SELECT ";
+
+    private readonly StringBuilder _stringBuilder;
+    private TableModel _mainTable;
+    private readonly List<QueryField> _Columns;
+    private readonly List<ForeignTableJoin> _Joins;
+    private readonly List<QueryConditionParameter> _Conditions;
+
+    public QueryBuilder()
     {
-        private const string START_QUERY = "SELECT ";
+        _stringBuilder = new StringBuilder(START_QUERY);
+        _Columns = new List<QueryField>();
+        _Joins = new List<ForeignTableJoin>();
+        _Conditions = new List<QueryConditionParameter>();
+    }
 
-        private readonly StringBuilder _stringBuilder;
-        private TableModel _mainTable;
-        private readonly List<QueryField> _Columns;
-        private readonly List<ForeignTableJoin> _Joins;
-        private readonly List<QueryConditionParameter> _ConditionParameters;
+    public QueryField[] Columns => _Columns.ToArray();
 
-        public QueryBuilder()
+    public ForeignTableJoin[] Joins => _Joins.ToArray();
+
+    public QueryConditionParameter[] Conditions => _Conditions.ToArray();
+
+    private void AppendColumnArray()
+    {
+        if (_Columns.Count == 0)
         {
-            _stringBuilder = new StringBuilder(START_QUERY);
-            _Columns = new List<QueryField>();
-            _Joins = new List<ForeignTableJoin>();
-            _ConditionParameters = new List<QueryConditionParameter>();
+            _stringBuilder.Append("* ");
         }
 
-        private void AppendColumnArray()
+        for (int index = 0; index < _Columns.Count; index++)
         {
-            if (_Columns.Count == 0)
+            QueryField currentColumn = _Columns[index];
+
+            if (!currentColumn.Valid())
             {
-                _stringBuilder.Append("* ");
+                continue;
             }
 
-            for (int index = 0; index < _Columns.Count; index++)
+            _stringBuilder.Append(currentColumn);
+            _stringBuilder.Append(',');
+
+            if (index == _Columns.Count - 1)
             {
-                QueryField currentColumn = _Columns[index];
-
-                if (!currentColumn.Valid())
-                {
-                    continue;
-                }
-
-                _stringBuilder.Append(currentColumn);
-                _stringBuilder.Append(',');
-
-                if (index == _Columns.Count - 1)
-                {
-                    _stringBuilder[_stringBuilder.Length - 1] = ' ';
-                }
-            }
-
-            string tableName = _mainTable.GetTableName();
-
-            _stringBuilder.Append($"FROM {tableName}");
-        }
-
-        private void AppendJoinArray()
-        {
-            _Joins.Sort();
-
-            for (int index = 0; index < _Joins.Count; index++)
-            {
-                ForeignTableJoin currentForeignTable = _Joins[index];
-                string foreignTableResult = $"\r\n{currentForeignTable}";
-
-                _stringBuilder.Append(foreignTableResult);
+                _stringBuilder[_stringBuilder.Length - 1] = ' ';
             }
         }
 
-        private void AppendWhereArray()
+        string tableName = _mainTable.GetTableName();
+
+        _stringBuilder.Append($"FROM {tableName}");
+    }
+
+    private void AppendJoinArray()
+    {
+        _Joins.Sort();
+
+        for (int index = 0; index < _Joins.Count; index++)
         {
-            if (_ConditionParameters.Count == 0)
+            ForeignTableJoin currentForeignTable = _Joins[index];
+            string foreignTableResult = $"\r\n{currentForeignTable}";
+
+            _stringBuilder.Append(foreignTableResult);
+        }
+    }
+
+    private void AppendWhereArray()
+    {
+        if (_Conditions.Count == 0)
+        {
+            return;
+        }
+
+        _Conditions.Sort();
+        _stringBuilder.Append("\r\nWHERE ");
+
+        for (int index = 0; index < _Conditions.Count; index++)
+        {
+            QueryConditionParameter currentParameter = _Conditions[index];
+
+            if (index != 0)
             {
-                return;
+                _stringBuilder.Append($"\r\n{currentParameter.Condition} ");
             }
 
-            _ConditionParameters.Sort();
-            _stringBuilder.Append("\r\nWHERE ");
+            _stringBuilder.Append(currentParameter);
+        }
+    }
 
-            for (int index = 0; index < _ConditionParameters.Count; index++)
-            {
-                QueryConditionParameter currentParameter = _ConditionParameters[index];
-
-                if (index != 0)
-                {
-                    _stringBuilder.Append($"\r\n{currentParameter.Condition} ");
-                }
-
-                _stringBuilder.Append(currentParameter);
-            }
+    public QueryBuilder AddMainTable(TableModel mainTable)
+    {
+        if (mainTable == null)
+        {
+            throw new ArgumentNullException(nameof(mainTable));
         }
 
-        public QueryBuilder AddMainTable(TableModel mainTable)
+        _mainTable = mainTable;
+
+        return this;
+    }
+
+    public QueryBuilder AddColumn(QueryField tableColumn)
+    {
+        if (tableColumn == null)
         {
-            if (mainTable == null)
-            {
-                throw new ArgumentNullException(nameof(mainTable));
-            }
-
-            _mainTable = mainTable;
-
-            return this;
+            throw new ArgumentNullException(nameof(tableColumn));
         }
 
-        public QueryBuilder AddColumn(QueryField tableColumn)
+        _Columns.Add(tableColumn);
+
+        return this;
+    }
+
+    public QueryBuilder AddTableColumns(TablePanel tablePanel)
+    {
+        if (tablePanel == null)
         {
-            if (tableColumn == null)
-            {
-                throw new ArgumentNullException(nameof(tableColumn));
-            }
-
-            _Columns.Add(tableColumn);
-
-            return this;
+            throw new ArgumentNullException(nameof(tablePanel));
         }
 
-        public QueryBuilder AddTableColumns(TablePanel tablePanel)
+        foreach (ColumnPanel selectedColumnPanel in tablePanel.QueryColumns)
         {
-            if (tablePanel == null)
+            if (!selectedColumnPanel.Model.Checked)
             {
-                throw new ArgumentNullException(nameof(tablePanel));
+                continue;
             }
 
-            foreach (ColumnPanel selectedColumnPanel in tablePanel.QueryColumns)
-            {
-                if (!selectedColumnPanel.Model.Checked)
-                {
-                    continue;
-                }
-
-                AddColumn(selectedColumnPanel.Parameter);
-            }
-
-            return this;
+            AddColumn(selectedColumnPanel.Parameter);
         }
 
-        public QueryBuilder AddJoin(ForeignTableJoin join)
+        return this;
+    }
+
+    public QueryBuilder AddJoin(ForeignTableJoin join)
+    {
+        if (join == null)
         {
-            if (join == null)
-            {
-                throw new ArgumentNullException(nameof(join));
-            }
-
-            _Joins.Add(join);
-
-            return this;
+            throw new ArgumentNullException(nameof(join));
         }
 
-        public QueryBuilder AddCondition(QueryConditionParameter conditionParameter)
+        _Joins.Add(join);
+
+        return this;
+    }
+
+    public QueryBuilder AddCondition(QueryConditionParameter conditionParameter)
+    {
+        if (conditionParameter == null)
         {
-            if (conditionParameter == null)
-            {
-                throw new ArgumentNullException(nameof(conditionParameter));
-            }
-
-            _ConditionParameters.Add(conditionParameter);
-
-            return this;
+            throw new ArgumentNullException(nameof(conditionParameter));
         }
 
-        public QueryBuilder AddTableConditions(TablePanel tablePanel)
+        _Conditions.Add(conditionParameter);
+
+        return this;
+    }
+
+    public QueryBuilder AddTableConditions(TablePanel tablePanel)
+    {
+        if (tablePanel == null)
         {
-            if (tablePanel == null)
-            {
-                throw new ArgumentNullException(nameof(tablePanel));
-            }
-
-            foreach (ConditionPanel currentCondition in tablePanel.QueryConditions)
-            {
-                AddCondition(currentCondition.Parameter);
-            }
-
-            return this;
+            throw new ArgumentNullException(nameof(tablePanel));
         }
 
-        public QueryBuilder RemoveColumn(QueryField tableColumn)
+        foreach (ConditionPanel currentCondition in tablePanel.QueryConditions)
         {
-            if (tableColumn == null)
-            {
-                throw new ArgumentNullException(nameof(tableColumn));
-            }
-
-            _Columns.Remove(tableColumn);
-
-            return this;
+            AddCondition(currentCondition.Parameter);
         }
 
-        public QueryBuilder RemoveJoin(ForeignTableJoin join)
+        return this;
+    }
+
+    public QueryBuilder RemoveColumn(QueryField tableColumn)
+    {
+        if (tableColumn == null)
         {
-            if (join == null)
-            {
-                throw new ArgumentNullException(nameof(join));
-            }
-
-            _Joins.Remove(join);
-
-            return this;
+            throw new ArgumentNullException(nameof(tableColumn));
         }
 
-        public QueryBuilder RemoveCondition(QueryConditionParameter conditionParameter)
+        _Columns.Remove(tableColumn);
+
+        return this;
+    }
+
+    public QueryBuilder RemoveJoin(ForeignTableJoin join)
+    {
+        if (join == null)
         {
-            if (conditionParameter == null)
-            {
-                throw new ArgumentNullException(nameof(conditionParameter));
-            }
-
-            _ConditionParameters.Remove(conditionParameter);
-
-            return this;
+            throw new ArgumentNullException(nameof(join));
         }
 
-        public QueryBuilder ClearColumns()
+        _Joins.Remove(join);
+
+        return this;
+    }
+
+    public QueryBuilder RemoveCondition(QueryConditionParameter conditionParameter)
+    {
+        if (conditionParameter == null)
         {
-            _Columns.Clear();
-
-            return this;
+            throw new ArgumentNullException(nameof(conditionParameter));
         }
 
-        public QueryBuilder ClearJoins()
-        {
-            _Joins.Clear();
+        _Conditions.Remove(conditionParameter);
 
-            return this;
-        }
+        return this;
+    }
 
-        public QueryBuilder ClearCondition()
-        {
-            _ConditionParameters.Clear();
+    public QueryBuilder ClearTables()
+    {
+        return this;
+    }
 
-            return this;
-        }
+    public QueryBuilder ClearColumns()
+    {
+        _Columns.Clear();
+        return this;
+    }
 
-        public QueryBuilder Clear()
-        {
-            _stringBuilder.Clear();
+    public QueryBuilder ClearJoins()
+    {
+        _Joins.Clear();
+        return this;
+    }
 
-            ClearColumns();
-            ClearJoins();
-            ClearCondition();
+    public QueryBuilder ClearCondition()
+    {
+        _Conditions.Clear();
+        return this;
+    }
 
-            _stringBuilder.Append(START_QUERY);
+    public QueryBuilder Clear()
+    {
+        _stringBuilder.Clear();
 
-            return this;
-        }
+        ClearTables();
+        ClearColumns();
+        ClearJoins();
+        ClearCondition();
 
-        public string Build()
-        {
-            AppendColumnArray();
-            AppendJoinArray();
-            AppendWhereArray();
+        _stringBuilder.Append(START_QUERY);
 
-            return _stringBuilder.ToString();
-        }
+        return this;
+    }
+
+    public string Build()
+    {
+        AppendColumnArray();
+        AppendJoinArray();
+        AppendWhereArray();
+
+        return _stringBuilder.ToString();
     }
 }
