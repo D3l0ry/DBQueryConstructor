@@ -1,21 +1,20 @@
 ﻿using DBQueryConstructor.DatabaseInteractions.Models;
 
-namespace DBQueryConstructor.Controls
+namespace DBQueryConstructor.Controls;
+
+internal class ColumnCheckBox : CheckBox
 {
-    internal class ColumnCheckBox : CheckBox
+    private readonly TableColumnModel _Column;
+
+    public ColumnCheckBox(TableColumnModel column) : base()
     {
-        private readonly TableColumnModel _Column;
-
-        public ColumnCheckBox(TableColumnModel column) : base()
+        if (column == null)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
-
-            _Column = column;
+            throw new ArgumentNullException(nameof(column));
         }
 
-        public TableColumnModel Column => _Column;
+        _Column = column;
     }
+
+    public TableColumnModel Column => _Column;
 }
