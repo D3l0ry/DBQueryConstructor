@@ -1,48 +1,63 @@
 ﻿using DBQueryConstructor.ControlAbstraction;
 
-namespace DBQueryConstructor.Controls.ColumnPanels
+namespace DBQueryConstructor.Controls.ColumnPanels;
+
+internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryField>
 {
-    internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryField>
+    private readonly TextBox _AliasTextBox;
+
+    public ColumnPanel(ColumnCheckBox model) : base(model)
     {
-        public ColumnPanel(ColumnCheckBox model) : base(model)
+        _AliasTextBox = new TextBox();
+
+        Text = model.Column.GetColumnName();
+        BackColor = Color.Bisque;
+        Dock = DockStyle.Top;
+
+        Parameter.Column = model.Column;
+
+        FillPanel();
+    }
+
+    private void FillPanel()
+    {
+        Label aliasLabel = new Label();
+        aliasLabel.Dock = DockStyle.Left;
+        aliasLabel.Text = "Псевдоним";
+
+        _AliasTextBox.Dock = DockStyle.Left;
+        _AliasTextBox.Width = 150;
+        _AliasTextBox.TextChanged += Alias_TextChanged;
+        _AliasTextBox.KeyPress += AliasTextBox_KeyPress;
+
+        Controls.Add(_AliasTextBox);
+        Controls.Add(aliasLabel);
+    }
+
+    public override QueryField Parameter
+    {
+        get => base.Parameter;
+        set
         {
-            Text = model.Column.GetColumnName();
-            BackColor = Color.Bisque;
-            Dock = DockStyle.Top;
+            base.Parameter = value;
 
-            Parameter.Column = model.Column;
-
-            FillPanel();
+            if (_AliasTextBox != null)
+            {
+                _AliasTextBox.Text = value.ColumnAlias;
+            }
         }
+    }
 
-        private void FillPanel()
-        {
-            Label aliasLabel = new Label();
-            aliasLabel.Dock = DockStyle.Left;
-            aliasLabel.Text = "Псевдоним";
+    private void AliasTextBox_KeyPress(object sender, KeyPressEventArgs e)
+    {
+        e.Handled = !char.IsLetter(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '\b';
+    }
 
-            TextBox aliasTextBox = new TextBox();
-            aliasTextBox.Dock = DockStyle.Left;
-            aliasTextBox.Width = 150;
-            aliasTextBox.TextChanged += Alias_TextChanged;
-            aliasTextBox.KeyPress += AliasTextBox_KeyPress;
+    private void Alias_TextChanged(object sender, EventArgs e)
+    {
+        TextBox aliasTextBox = (TextBox)sender;
+        Parameter.ColumnAlias = aliasTextBox.Text.Trim();
 
-            Controls.Add(aliasTextBox);
-            Controls.Add(aliasLabel);
-        }
-
-        private void AliasTextBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = !char.IsLetter(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '\b';
-        }
-
-        private void Alias_TextChanged(object sender, EventArgs e)
-        {
-            TextBox aliasTextBox = (TextBox)sender;
-
-            Parameter.ColumnAlias = aliasTextBox.Text.Trim();
-
-            OnDataChanged();
-        }
+        OnDataChanged();
     }
 }
