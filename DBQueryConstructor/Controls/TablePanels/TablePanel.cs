@@ -54,13 +54,6 @@ internal class TablePanel : ViewGroupBox<TableModel, TableParameter>
         }
     }
 
-    protected override void OnMouseDown(MouseEventArgs e)
-    {
-        DoDragDrop(this, DragDropEffects.Move);
-
-        base.OnMouseDown(e);
-    }
-
     private ColumnPanel[] GetQueryColumns()
     {
         List<ColumnPanel> labels = new List<ColumnPanel>();
@@ -90,10 +83,11 @@ internal class TablePanel : ViewGroupBox<TableModel, TableParameter>
         topPanel.Dock = DockStyle.Top;
         topPanel.Width = 50;
         topPanel.Height = 25;
-        //topPanel.Enabled = false;
+        topPanel.MouseDown += Panel_MouseDown;
         topPanel.Controls.Add(topPanelLabel);
 
         topPanelLabel.Text = Model.GetTableName();
+        topPanelLabel.Enabled = false;
         topPanelLabel.Dock = DockStyle.Top;
 
         foreach (TableColumnModel currentColumn in Model.Columns)
@@ -109,6 +103,16 @@ internal class TablePanel : ViewGroupBox<TableModel, TableParameter>
         _ColumnPanel.Controls.AddRange(checkBoxes.ToArray());
         Controls.Add(_ColumnPanel);
         Controls.Add(topPanel);
+    }
+
+    private void Panel_MouseDown(object sender, MouseEventArgs e)
+    {
+        if (e.Button != MouseButtons.Left)
+        {
+            return;
+        }
+
+        DoDragDrop(this, DragDropEffects.Move);
     }
 
     private void CheckBox_CheckedChanged(object sender, EventArgs e) => OnDataChanged();
