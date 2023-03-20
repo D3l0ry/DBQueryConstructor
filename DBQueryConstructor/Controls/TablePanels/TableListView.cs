@@ -1,23 +1,26 @@
 ﻿using DBQueryConstructor.ControlAbstraction;
 using DBQueryConstructor.Controls.DatabasePanels;
+using DBQueryConstructor.DatabaseInteractions.Models;
 
-namespace DBQueryConstructor.Controls.TablePanels
+namespace DBQueryConstructor.Controls.TablePanels;
+
+internal class TableListView : ListViewPanel<TablePanel>
 {
-    internal class TableListView : ListViewPanel<TablePanel>
+    private readonly ContextMenuStrip _contextMenuStrip;
+
+    public TableListView() : base()
     {
-        public TableListView() : base() { }
+        _contextMenuStrip = new ContextMenuStrip();
 
-        protected override void OnPaint(PaintEventArgs e)
+        FillContextMenu();
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        Graphics graphics = e.Graphics;
+
+        if (Controls.Count == 0)
         {
-            Graphics graphics = e.Graphics;
-
-            if (Controls.Count > 0)
-            {
-                base.OnPaint(e);
-
-                return;
-            }
-
             const string message = "Первая добавленная таблица является главной и не подлежит удалению";
             Font textFont = new Font("Tahoma", 14);
             Brush lightGreen = Brushes.DimGray;
@@ -25,47 +28,100 @@ namespace DBQueryConstructor.Controls.TablePanels
             PointF point = new PointF((Width / 2) - (messageMeasure.Width / 2), Height / 2);
 
             graphics.DrawString(message, textFont, lightGreen, point);
-
-            base.OnPaint(e);
         }
 
-        protected override void OnDragEnter(DragEventArgs drgevent)
+        base.OnPaint(e);
+    }
+
+    protected override void OnDragEnter(DragEventArgs drgevent)
+    {
+        if (!drgevent.Data.GetDataPresent(typeof(TableTreeNode)))
         {
-            if (!drgevent.Data.GetDataPresent(typeof(TableTreeNode)))
-            {
-                return;
-            }
-
-            drgevent.Effect = DragDropEffects.Move;
+            return;
         }
 
-        protected override void OnDragDrop(DragEventArgs drgevent)
+        drgevent.Effect = DragDropEffects.Move;
+    }
+
+    protected override void OnDragDrop(DragEventArgs drgevent)
+    {
+        TableTreeNode selectedTableNode = (TableTreeNode)drgevent.Data.GetData(typeof(TableTreeNode));
+
+        bool isExists = Panels
+            .Any(currentTablePanel => currentTablePanel.Model == selectedTableNode.Element);
+
+        if (isExists)
         {
-            TableTreeNode selectedTableNode = (TableTreeNode)drgevent.Data.GetData(typeof(TableTreeNode));
+            const string message = "Такая таблица уже добавлена в конструктор!";
+            const string title = "Ошибка добавления таблицы";
 
-            bool isExists = Panels
-                .Any(currentTablePanel => currentTablePanel.Model == selectedTableNode.Element);
+            MessageBox
+                .Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            if (isExists)
-            {
-                const string message = "Такая таблица уже добавлена в конструктор!";
-                const string title = "Ошибка добавления таблицы";
-
-                MessageBox
-                    .Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                return;
-            }
-
-            TablePanel newTablePanel = new TablePanel(selectedTableNode.Element);
-            newTablePanel.Parameter = Controls.Count == 0;
-            newTablePanel.ColumnEnable = newTablePanel.Parameter;
-            newTablePanel.DataChanged += TablePanelDataChanged;
-
-            Controls.Add(newTablePanel);
-            OnDataChanged();
+            return;
         }
 
-        private void TablePanelDataChanged(object sender, EventArgs e) => OnDataChanged();
+        TablePanel newPanel = CreateTablePanel(selectedTableNode.Element);
+
+        AddPanel(newPanel);
+    }
+
+    protected override void OnControlAdded(ControlEventArgs e)
+    {
+        TablePanel addedTablePanel = (TablePanel)e.Control;
+        addedTablePanel.DataChanged += TablePanelDataChanged;
+
+        OnDataChanged();
+        base.OnControlAdded(e);
+    }
+
+    private void FillContextMenu()
+    {
+        ToolStripButton toolStripButton = new ToolStripButton();
+        toolStripButton.Text = "Удалить";
+        toolStripButton.Width = 50;
+        toolStripButton.Click += ToolStripButton_Click;
+
+        _contextMenuStrip.Items.Add(toolStripButton);
+    }
+
+    private void TablePanelDataChanged(object sender, EventArgs e) => OnDataChanged();
+
+    private void ToolStripButton_Click(object sender, EventArgs e)
+    {
+        TablePanel parent = (TablePanel)_contextMenuStrip.SourceControl;
+
+        if (parent == null)
+        {
+            return;
+        }
+
+        Controls.Remove(parent);
+    }
+
+    public override void AddPanel(TablePanel panel)
+    {
+        if (panel == null)
+        {
+            throw new ArgumentNullException(nameof(panel));
+        }
+
+        if (!panel.Parameter.IsMainTable)
+        {
+            panel.ContextMenuStrip = _contextMenuStrip;
+        }
+
+        Controls.Add(panel);
+    }
+
+    public TablePanel CreateTablePanel(TableModel model)
+    {
+        bool isMainTable = Controls.Count == 0;
+        TablePanel newTablePanel = new TablePanel(model);
+
+        newTablePanel.Parameter.IsMainTable = isMainTable;
+        newTablePanel.ColumnEnable = isMainTable;
+
+        return newTablePanel;
     }
 }
