@@ -20,7 +20,7 @@ public abstract class ViewGroupBox<TableModel, QueryParameter> : GroupBox where 
 
     public TableModel Model => _Model;
 
-    public QueryParameter Parameter { get; set; }
+    public virtual QueryParameter Parameter { get; set; }
 
     public event EventHandler DataChanged;
 
