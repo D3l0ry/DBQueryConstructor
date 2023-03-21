@@ -2,11 +2,12 @@
 using DBQueryConstructor.Controls.JoinPanels;
 using DBQueryConstructor.Controls.TablePanels;
 using DBQueryConstructor.DatabaseInteractions.Models;
+using DBQueryConstructor.Parameters;
 using DBQueryConstructor.QueryInteractions;
 
 namespace DBQueryConstructor.Controls;
 
-internal class JoinPanel : ViewGroupBox<TablePanel, ForeignTableJoin>
+internal class JoinPanel : ViewGroupBox<TablePanel, ForeignTableJoinParameter>
 {
     private readonly ComboBox _QueryJoinSelectComboBox;
     private readonly ComboBox _QueryJoinTableSelectComboBox;
@@ -29,7 +30,7 @@ internal class JoinPanel : ViewGroupBox<TablePanel, ForeignTableJoin>
         FillPanel();
     }
 
-    public override ForeignTableJoin Parameter
+    public override ForeignTableJoinParameter Parameter
     {
         get => base.Parameter;
         set

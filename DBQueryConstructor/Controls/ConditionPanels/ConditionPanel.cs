@@ -1,6 +1,6 @@
 ﻿using DBQueryConstructor.ControlAbstraction;
-using DBQueryConstructor.Controls.ConditionPanels;
 using DBQueryConstructor.DatabaseInteractions.Models;
+using DBQueryConstructor.Parameters;
 using DBQueryConstructor.QueryInteractions;
 
 namespace DBQueryConstructor.Controls;

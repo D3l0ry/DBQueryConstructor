@@ -60,6 +60,8 @@ namespace DBQueryConstructor
             this.queryConstructorOpenToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorSaveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorQueryExecuteButton = new System.Windows.Forms.ToolStripButton();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.queryConstructorTabControl.SuspendLayout();
             this.queryTabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.queryTabPageSplitContainer)).BeginInit();
@@ -425,6 +427,14 @@ namespace DBQueryConstructor
             this.queryConstructorQueryExecuteButton.Text = "Выполнить";
             this.queryConstructorQueryExecuteButton.Click += new System.EventHandler(this.QueryConstructorExecuteButton_Click);
             // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.Filter = "Сохранение конструктора|*.dbcs";
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.Filter = "Сохранение конструктора|*.dbcs";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -495,5 +505,7 @@ namespace DBQueryConstructor
         private ToolStripButton queryConstructorQueryExecuteButton;
         private ToolStripButton queryConstructorSaveToolStripButton;
         private ToolStripButton queryConstructorOpenToolStripButton;
+        private SaveFileDialog saveFileDialog;
+        private OpenFileDialog openFileDialog;
     }
 }

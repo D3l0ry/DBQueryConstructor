@@ -2,9 +2,8 @@
 
 using DBQueryConstructor.Controls;
 using DBQueryConstructor.Controls.ColumnPanels;
-using DBQueryConstructor.Controls.ConditionPanels;
-using DBQueryConstructor.Controls.JoinPanels;
 using DBQueryConstructor.DatabaseInteractions.Models;
+using DBQueryConstructor.Parameters;
 
 namespace DBQueryConstructor.QueryInteractions;
 
@@ -14,21 +13,21 @@ internal class QueryBuilder
 
     private readonly StringBuilder _stringBuilder;
     private TableModel _mainTable;
-    private readonly List<QueryField> _Columns;
-    private readonly List<ForeignTableJoin> _Joins;
+    private readonly List<QueryFieldParameter> _Columns;
+    private readonly List<ForeignTableJoinParameter> _Joins;
     private readonly List<QueryConditionParameter> _Conditions;
 
     public QueryBuilder()
     {
         _stringBuilder = new StringBuilder(START_QUERY);
-        _Columns = new List<QueryField>();
-        _Joins = new List<ForeignTableJoin>();
+        _Columns = new List<QueryFieldParameter>();
+        _Joins = new List<ForeignTableJoinParameter>();
         _Conditions = new List<QueryConditionParameter>();
     }
 
-    public QueryField[] Columns => _Columns.ToArray();
+    public QueryFieldParameter[] Columns => _Columns.ToArray();
 
-    public ForeignTableJoin[] Joins => _Joins.ToArray();
+    public ForeignTableJoinParameter[] Joins => _Joins.ToArray();
 
     public QueryConditionParameter[] Conditions => _Conditions.ToArray();
 
@@ -41,7 +40,7 @@ internal class QueryBuilder
 
         for (int index = 0; index < _Columns.Count; index++)
         {
-            QueryField currentColumn = _Columns[index];
+            QueryFieldParameter currentColumn = _Columns[index];
 
             if (!currentColumn.Valid())
             {
@@ -68,7 +67,7 @@ internal class QueryBuilder
 
         for (int index = 0; index < _Joins.Count; index++)
         {
-            ForeignTableJoin currentForeignTable = _Joins[index];
+            ForeignTableJoinParameter currentForeignTable = _Joins[index];
             string foreignTableResult = $"\r\n{currentForeignTable}";
 
             _stringBuilder.Append(foreignTableResult);
@@ -110,7 +109,7 @@ internal class QueryBuilder
         return this;
     }
 
-    public QueryBuilder AddColumn(QueryField tableColumn)
+    public QueryBuilder AddColumn(QueryFieldParameter tableColumn)
     {
         if (tableColumn == null)
         {
@@ -142,7 +141,7 @@ internal class QueryBuilder
         return this;
     }
 
-    public QueryBuilder AddJoin(ForeignTableJoin join)
+    public QueryBuilder AddJoin(ForeignTableJoinParameter join)
     {
         if (join == null)
         {
@@ -181,7 +180,7 @@ internal class QueryBuilder
         return this;
     }
 
-    public QueryBuilder RemoveColumn(QueryField tableColumn)
+    public QueryBuilder RemoveColumn(QueryFieldParameter tableColumn)
     {
         if (tableColumn == null)
         {
@@ -193,7 +192,7 @@ internal class QueryBuilder
         return this;
     }
 
-    public QueryBuilder RemoveJoin(ForeignTableJoin join)
+    public QueryBuilder RemoveJoin(ForeignTableJoinParameter join)
     {
         if (join == null)
         {

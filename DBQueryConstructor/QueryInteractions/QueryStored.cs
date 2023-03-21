@@ -1,7 +1,4 @@
-﻿using DBQueryConstructor.Controls.ColumnPanels;
-using DBQueryConstructor.Controls.ConditionPanels;
-using DBQueryConstructor.Controls.JoinPanels;
-using DBQueryConstructor.Controls.TablePanels;
+﻿using DBQueryConstructor.Parameters;
 
 namespace DBQueryConstructor.QueryInteractions;
 internal class QueryStored
@@ -12,9 +9,9 @@ internal class QueryStored
 
     public TableParameter[] Tables { get; set; }
 
-    public QueryField[] Columns { get; set; }
+    public QueryFieldParameter[] Columns { get; set; }
 
-    public ForeignTableJoin[] Joins { get; set; }
+    public ForeignTableJoinParameter[] Joins { get; set; }
 
     public QueryConditionParameter[] Conditions { get; set; }
 }

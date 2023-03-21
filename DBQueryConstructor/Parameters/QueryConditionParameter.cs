@@ -3,7 +3,7 @@
 using DBQueryConstructor.DatabaseInteractions.Models;
 using DBQueryConstructor.QueryInteractions;
 
-namespace DBQueryConstructor.Controls.ConditionPanels;
+namespace DBQueryConstructor.Parameters;
 
 internal class QueryConditionParameter : IComparable<QueryConditionParameter>
 {

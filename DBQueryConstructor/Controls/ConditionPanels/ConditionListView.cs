@@ -6,6 +6,18 @@ internal class ConditionListView : ListViewPanel<ConditionPanel>
 {
     public ConditionListView() : base() { }
 
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        int index = 0;
+
+        foreach (ConditionPanel currentPanel in Panels)
+        {
+            currentPanel.Parameter.Index = index++;
+        }
+
+        base.OnPaint(e);
+    }
+
     protected override void OnDragEnter(DragEventArgs drgevent)
     {
         bool isDataTablePanel = drgevent.Data.GetDataPresent(typeof(TablePanel));
@@ -40,18 +52,7 @@ internal class ConditionListView : ListViewPanel<ConditionPanel>
 
         conditionPanel.Model.QueryConditions.Add(conditionPanel);
         base.OnControlAdded(e);
-    }
-
-    protected override void OnPaint(PaintEventArgs e)
-    {
-        int index = 0;
-
-        foreach (ConditionPanel currentPanel in Panels)
-        {
-            currentPanel.Parameter.Index = index++;
-        }
-
-        base.OnPaint(e);
+        OnDataChanged();
     }
 
     public ConditionPanel CreateConditionPanel(TablePanel panel)

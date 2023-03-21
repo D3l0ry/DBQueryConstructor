@@ -64,6 +64,7 @@ internal class JoinListView : ListViewPanel<JoinPanel>
         joinPanel.Model.Join = joinPanel;
 
         base.OnControlAdded(e);
+        OnDataChanged();
     }
 
     protected override void OnControlRemoved(ControlEventArgs e)
@@ -72,6 +73,7 @@ internal class JoinListView : ListViewPanel<JoinPanel>
 
         ClearJoinMainTableColumns(removedPanel);
         base.OnControlRemoved(e);
+        OnDataChanged();
     }
 
     public JoinPanel CreateJoinPanel(TablePanel table)

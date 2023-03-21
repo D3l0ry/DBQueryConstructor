@@ -2,8 +2,8 @@
 
 using DBQueryConstructor.ControlAbstraction;
 using DBQueryConstructor.Controls.ColumnPanels;
-using DBQueryConstructor.Controls.TablePanels;
 using DBQueryConstructor.DatabaseInteractions.Models;
+using DBQueryConstructor.Parameters;
 
 namespace DBQueryConstructor.Controls;
 

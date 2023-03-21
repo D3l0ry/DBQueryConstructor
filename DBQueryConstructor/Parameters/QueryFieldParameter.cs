@@ -2,9 +2,9 @@
 
 using DBQueryConstructor.DatabaseInteractions.Models;
 
-namespace DBQueryConstructor.Controls.ColumnPanels;
+namespace DBQueryConstructor.Parameters;
 
-internal class QueryField
+internal class QueryFieldParameter
 {
     public TableColumnModel Column { get; set; }
 

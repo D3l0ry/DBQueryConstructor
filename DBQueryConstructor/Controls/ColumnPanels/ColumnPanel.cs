@@ -1,8 +1,9 @@
 ﻿using DBQueryConstructor.ControlAbstraction;
+using DBQueryConstructor.Parameters;
 
 namespace DBQueryConstructor.Controls.ColumnPanels;
 
-internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryField>
+internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryFieldParameter>
 {
     private readonly TextBox _AliasTextBox;
 
@@ -34,7 +35,7 @@ internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryField>
         Controls.Add(aliasLabel);
     }
 
-    public override QueryField Parameter
+    public override QueryFieldParameter Parameter
     {
         get => base.Parameter;
         set

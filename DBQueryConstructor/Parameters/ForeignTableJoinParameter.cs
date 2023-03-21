@@ -3,9 +3,9 @@
 using DBQueryConstructor.DatabaseInteractions.Models;
 using DBQueryConstructor.QueryInteractions;
 
-namespace DBQueryConstructor.Controls.JoinPanels;
+namespace DBQueryConstructor.Parameters;
 
-internal class ForeignTableJoin : IComparable<ForeignTableJoin>
+internal class ForeignTableJoinParameter : IComparable<ForeignTableJoinParameter>
 {
     public int Index { get; set; }
 
@@ -19,7 +19,7 @@ internal class ForeignTableJoin : IComparable<ForeignTableJoin>
 
     public bool Validate() => JoinedColumnTable != null && MainColumnTable != null;
 
-    public int CompareTo(ForeignTableJoin other) => Index.CompareTo(other.Index);
+    public int CompareTo(ForeignTableJoinParameter other) => Index.CompareTo(other.Index);
 
     public override string ToString()
     {

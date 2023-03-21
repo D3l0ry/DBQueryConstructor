@@ -3,9 +3,7 @@ using System.Text.Json;
 
 using DBQueryConstructor.Controls;
 using DBQueryConstructor.Controls.ColumnPanels;
-using DBQueryConstructor.Controls.ConditionPanels;
-using DBQueryConstructor.Controls.JoinPanels;
-using DBQueryConstructor.Controls.TablePanels;
+using DBQueryConstructor.Parameters;
 using DBQueryConstructor.QueryInteractions;
 
 using Handy;
@@ -27,10 +25,10 @@ public partial class MainForm : Form
     {
         get
         {
-            CreateParams cp = base.CreateParams;
-            cp.ExStyle = 0x2000000;
+            CreateParams parameters = base.CreateParams;
+            parameters.ExStyle = 0x2000000;
 
-            return cp;
+            return parameters;
         }
     }
 
@@ -99,9 +97,14 @@ public partial class MainForm : Form
 
     private void QueryConstructorOpenToolStripButton_Click(object sender, EventArgs e)
     {
+        if (openFileDialog.ShowDialog() != DialogResult.OK)
+        {
+            return;
+        }
+
         ClearConstructor();
 
-        using FileStream storedFile = new FileStream("QueryStored.json", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using Stream storedFile = openFileDialog.OpenFile();
         QueryStored stored = JsonSerializer.Deserialize<QueryStored>(storedFile);
 
         if (stored == null)
@@ -113,7 +116,7 @@ public partial class MainForm : Form
         {
             TablePanel tablePanel = queryConstructorTableListView.CreateTablePanel(currentTable.Table);
 
-            foreach (QueryField currentField in stored.Columns)
+            foreach (QueryFieldParameter currentField in stored.Columns)
             {
                 ColumnCheckBox selectedCheckBox = tablePanel.Columns
                     .FirstOrDefault(currentColumn =>
@@ -135,7 +138,7 @@ public partial class MainForm : Form
             queryConstructorTableListView.AddPanel(tablePanel);
         }
 
-        foreach (ForeignTableJoin currentJoin in stored.Joins)
+        foreach (ForeignTableJoinParameter currentJoin in stored.Joins)
         {
             TablePanel tablePanel = queryConstructorTableListView.Panels
                 .FirstOrDefault(currentTablePanel =>
@@ -172,6 +175,11 @@ public partial class MainForm : Form
 
     private void QueryConstructorSaveToolStripButton_Click(object sender, EventArgs e)
     {
+        if (saveFileDialog.ShowDialog() != DialogResult.OK)
+        {
+            return;
+        }
+
         QueryStored stored = new QueryStored();
 
         stored.Server = Program.UsedDatabase.Connection.DataSource;
@@ -181,7 +189,7 @@ public partial class MainForm : Form
         stored.Joins = queryConstructorMiscJoinListView.Panels.Select(x => x.Parameter).ToArray();
         stored.Conditions = queryConstructorMiscConditionListView.Panels.Select(x => x.Parameter).ToArray();
 
-        using FileStream storedFile = new FileStream("QueryStored.json", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+        using FileStream storedFile = new FileStream(saveFileDialog.FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
         JsonSerializerOptions options = new JsonSerializerOptions();
 
         options.WriteIndented = true;
