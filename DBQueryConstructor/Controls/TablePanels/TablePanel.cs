@@ -13,13 +13,14 @@ namespace DBQueryConstructor.Controls;
 /// <remarks>bool значение с именем Parameter обозначанет, что панель является главной</remarks>
 internal class TablePanel : ViewGroupBox<TableModel, TableParameter>
 {
-    private readonly Panel _ColumnPanel;
-    private readonly ReadOnlyCollection<ColumnPanel> _QueryColumns;
-    private readonly List<ConditionPanel> _QueryConditions;
+    private TableLayoutPanel _ColumnPanel;
+    private List<ColumnPanel> _QueryColumns;
+    private List<ConditionPanel> _QueryConditions;
 
     public TablePanel(TableModel table) : base(table)
     {
-        _ColumnPanel = new Panel();
+        _ColumnPanel = new TableLayoutPanel();
+        _QueryColumns = new List<ColumnPanel>();
         _QueryConditions = new List<ConditionPanel>();
 
         Parameter.Table = table;
@@ -27,18 +28,13 @@ internal class TablePanel : ViewGroupBox<TableModel, TableParameter>
         MinimumSize = new Size(175, 50);
         AutoSizeMode = AutoSizeMode.GrowAndShrink;
         Padding = new Padding(5, 1, 5, 5);
-
-        FillPanel();
-
-        ColumnPanel[] queryColumns = GetQueryColumns();
-        _QueryColumns = new ReadOnlyCollection<ColumnPanel>(queryColumns);
     }
 
-    public IEnumerable<ColumnCheckBox> Columns => _ColumnPanel.Controls.OfType<ColumnCheckBox>().Reverse();
+    public IEnumerable<ColumnCheckBox> Columns => _ColumnPanel.Controls.OfType<ColumnCheckBox>();
 
     public IEnumerable<ColumnCheckBox> CheckedColumns => Columns.Where(currentCheckBox => currentCheckBox.Checked);
 
-    public ReadOnlyCollection<ColumnPanel> QueryColumns => _QueryColumns;
+    public ReadOnlyCollection<ColumnPanel> QueryColumns => new ReadOnlyCollection<ColumnPanel>(_QueryColumns);
 
     public List<ConditionPanel> QueryConditions => _QueryConditions;
 
@@ -54,29 +50,13 @@ internal class TablePanel : ViewGroupBox<TableModel, TableParameter>
         }
     }
 
-    private ColumnPanel[] GetQueryColumns()
-    {
-        List<ColumnPanel> labels = new List<ColumnPanel>();
-
-        foreach (ColumnCheckBox currentTablePanelCheckBox in Columns)
-        {
-            ColumnPanel newFieldLabel = new ColumnPanel(currentTablePanelCheckBox);
-
-            labels.Add(newFieldLabel);
-        }
-
-        return labels.ToArray();
-    }
-
-    private void FillPanel()
+    protected override void InitializeComponent()
     {
         Panel topPanel = new Panel();
         Label topPanelLabel = new Label();
-        Stack<ColumnCheckBox> checkBoxes = new Stack<ColumnCheckBox>(Model.Columns.Length);
 
         _ColumnPanel.AutoSize = true;
         _ColumnPanel.Dock = DockStyle.Fill;
-        _ColumnPanel.Enabled = false;
 
         topPanel.BackColor = Color.Aqua;
         topPanel.BorderStyle = BorderStyle.FixedSingle;
@@ -93,14 +73,16 @@ internal class TablePanel : ViewGroupBox<TableModel, TableParameter>
         foreach (TableColumnModel currentColumn in Model.Columns)
         {
             ColumnCheckBox newColumnCheckBox = new ColumnCheckBox(currentColumn);
+            ColumnPanel newColumnPanel = new ColumnPanel(newColumnCheckBox);
+
             newColumnCheckBox.Dock = DockStyle.Top;
             newColumnCheckBox.Text = currentColumn.Name;
             newColumnCheckBox.CheckedChanged += CheckBox_CheckedChanged;
 
-            checkBoxes.Push(newColumnCheckBox);
+            _QueryColumns.Add(newColumnPanel);
+            _ColumnPanel.Controls.Add(newColumnCheckBox);
         }
 
-        _ColumnPanel.Controls.AddRange(checkBoxes.ToArray());
         Controls.Add(_ColumnPanel);
         Controls.Add(topPanel);
     }

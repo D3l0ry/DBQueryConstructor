@@ -20,9 +20,17 @@ public abstract class ViewGroupBox<TableModel, QueryParameter> : GroupBox where 
 
     public TableModel Model => _Model;
 
-    public virtual QueryParameter Parameter { get; set; }
+    public virtual QueryParameter Parameter { get; private set; }
 
     public event EventHandler DataChanged;
 
-    public void OnDataChanged() => DataChanged?.Invoke(this, EventArgs.Empty);
+    protected abstract void InitializeComponent();
+
+    protected override void OnCreateControl()
+    {
+        InitializeComponent();
+        base.OnCreateControl();
+    }
+
+    public virtual void OnDataChanged() => DataChanged?.Invoke(this, EventArgs.Empty);
 }

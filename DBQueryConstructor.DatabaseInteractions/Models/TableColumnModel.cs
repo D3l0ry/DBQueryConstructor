@@ -26,7 +26,15 @@ public class TableColumnModel
 
     public string GetColumnName() => $"{TableSchema}.{TableName}.{Name}";
 
-    public override bool Equals(object obj) => GetColumnName() == ((TableColumnModel)obj).GetColumnName();
+    public override bool Equals(object obj)
+    {
+        if (obj is not TableColumnModel)
+        {
+            return false;
+        }
+
+        return GetColumnName() == ((TableColumnModel)obj)?.GetColumnName();
+    }
 
     public override string ToString() => GetColumnName();
 }

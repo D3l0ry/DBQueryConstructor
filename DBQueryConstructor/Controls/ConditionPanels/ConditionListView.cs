@@ -51,7 +51,6 @@ internal class ConditionListView : ListViewPanel<ConditionPanel>
         conditionPanel.DataChanged += ConditionDataChanged;
 
         conditionPanel.Model.QueryConditions.Add(conditionPanel);
-        base.OnControlAdded(e);
         OnDataChanged();
     }
 
@@ -66,16 +65,6 @@ internal class ConditionListView : ListViewPanel<ConditionPanel>
         newConditionPanel.Dock = DockStyle.Top;
 
         return newConditionPanel;
-    }
-
-    public override void AddPanel(ConditionPanel panel)
-    {
-        if (panel == null)
-        {
-            throw new ArgumentNullException(nameof(panel));
-        }
-
-        Controls.Add(panel);
     }
 
     private void ConditionDataChanged(object sender, EventArgs e) => OnDataChanged();

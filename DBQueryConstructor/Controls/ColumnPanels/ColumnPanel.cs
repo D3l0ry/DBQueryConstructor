@@ -16,11 +16,9 @@ internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryFieldParameter>
         Dock = DockStyle.Top;
 
         Parameter.Column = model.Column;
-
-        FillPanel();
     }
 
-    private void FillPanel()
+    protected override void InitializeComponent()
     {
         Label aliasLabel = new Label();
         aliasLabel.Dock = DockStyle.Left;
@@ -28,25 +26,11 @@ internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryFieldParameter>
 
         _AliasTextBox.Dock = DockStyle.Left;
         _AliasTextBox.Width = 150;
-        _AliasTextBox.TextChanged += Alias_TextChanged;
         _AliasTextBox.KeyPress += AliasTextBox_KeyPress;
+        _AliasTextBox.TextChanged += Alias_TextChanged;
 
         Controls.Add(_AliasTextBox);
         Controls.Add(aliasLabel);
-    }
-
-    public override QueryFieldParameter Parameter
-    {
-        get => base.Parameter;
-        set
-        {
-            base.Parameter = value;
-
-            if (_AliasTextBox != null)
-            {
-                _AliasTextBox.Text = value.ColumnAlias;
-            }
-        }
     }
 
     private void AliasTextBox_KeyPress(object sender, KeyPressEventArgs e)

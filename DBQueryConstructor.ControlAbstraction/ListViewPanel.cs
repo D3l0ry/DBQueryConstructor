@@ -14,7 +14,15 @@ public abstract class ListViewPanel<PanelType> : TableLayoutPanel where PanelTyp
 
     public event EventHandler DataChanged;
 
-    public void OnDataChanged() => DataChanged?.Invoke(this, EventArgs.Empty);
+    public virtual void OnDataChanged() => DataChanged?.Invoke(this, EventArgs.Empty);
 
-    public abstract void AddPanel(PanelType panel);
+    public virtual void AddPanel(PanelType panel)
+    {
+        if (panel == null)
+        {
+            throw new ArgumentNullException(nameof(panel));
+        }
+
+        Controls.Add(panel);
+    }
 }

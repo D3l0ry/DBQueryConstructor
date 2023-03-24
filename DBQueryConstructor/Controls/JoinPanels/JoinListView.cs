@@ -63,7 +63,6 @@ internal class JoinListView : ListViewPanel<JoinPanel>
         joinPanel.DataChanged += JoinDataChanged;
         joinPanel.Model.Join = joinPanel;
 
-        base.OnControlAdded(e);
         OnDataChanged();
     }
 
@@ -72,7 +71,6 @@ internal class JoinListView : ListViewPanel<JoinPanel>
         JoinPanel removedPanel = (JoinPanel)e.Control;
 
         ClearJoinMainTableColumns(removedPanel);
-        base.OnControlRemoved(e);
         OnDataChanged();
     }
 
@@ -87,16 +85,6 @@ internal class JoinListView : ListViewPanel<JoinPanel>
         newJoin.Dock = DockStyle.Top;
 
         return newJoin;
-    }
-
-    public override void AddPanel(JoinPanel panel)
-    {
-        if (panel == null)
-        {
-            throw new ArgumentNullException(nameof(panel));
-        }
-
-        Controls.Add(panel);
     }
 
     private void JoinDataChanged(object sender, EventArgs e) => OnDataChanged();

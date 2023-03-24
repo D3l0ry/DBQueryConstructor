@@ -116,6 +116,8 @@ public partial class MainForm : Form
         {
             TablePanel tablePanel = queryConstructorTableListView.CreateTablePanel(currentTable.Table);
 
+            queryConstructorTableListView.AddPanel(tablePanel);
+
             foreach (QueryFieldParameter currentField in stored.Columns)
             {
                 ColumnCheckBox selectedCheckBox = tablePanel.Columns
@@ -131,11 +133,10 @@ public partial class MainForm : Form
                     .First(currentColumn =>
                         currentColumn.Model == selectedCheckBox);
 
-                selectedColumnPanel.Parameter = currentField;
+                selectedColumnPanel.Parameter.Column = currentField.Column;
+                selectedColumnPanel.Parameter.ColumnAlias = currentField.ColumnAlias;
                 selectedCheckBox.Checked = true;
             }
-
-            queryConstructorTableListView.AddPanel(tablePanel);
         }
 
         foreach (ForeignTableJoinParameter currentJoin in stored.Joins)
@@ -150,9 +151,16 @@ public partial class MainForm : Form
             }
 
             JoinPanel newJoin = queryConstructorMiscJoinListView.CreateJoinPanel(tablePanel);
-            newJoin.Parameter = currentJoin;
+
+            newJoin.Parameter.Index = currentJoin.Index;
+            newJoin.Parameter.TableName = currentJoin.TableName;
+            newJoin.Parameter.MainColumnTable = currentJoin.MainColumnTable;
+            newJoin.Parameter.JoinedColumnTable = currentJoin.JoinedColumnTable;
+            newJoin.Parameter.Join = currentJoin.Join;
 
             queryConstructorMiscJoinListView.AddPanel(newJoin);
+
+            tablePanel.ColumnEnable = newJoin.Parameter.Validate();
         }
 
         foreach (QueryConditionParameter currentCondition in stored.Conditions)
@@ -167,10 +175,19 @@ public partial class MainForm : Form
             }
 
             ConditionPanel newCondition = queryConstructorMiscConditionListView.CreateConditionPanel(tablePanel);
-            newCondition.Parameter = currentCondition;
+
+            newCondition.Parameter.Index = currentCondition.Index;
+            newCondition.Parameter.TableName = currentCondition.TableName;
+            newCondition.Parameter.Condition = currentCondition.Condition;
+            newCondition.Parameter.Equal = currentCondition.Equal;
+            newCondition.Parameter.Column = currentCondition.Column;
+            newCondition.Parameter.ParameterValue = currentCondition.ParameterValue;
+            newCondition.Parameter.IsNull = currentCondition.IsNull;
 
             queryConstructorMiscConditionListView.AddPanel(newCondition);
         }
+
+        GenerateQuery();
     }
 
     private void QueryConstructorSaveToolStripButton_Click(object sender, EventArgs e)

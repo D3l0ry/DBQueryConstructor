@@ -16,4 +16,6 @@ public class TableConstraintModel
 
     [Column("CONSTRAINT_TYPE")]
     public string Type { get; set; }
+
+    public string GetTableName() => $"{SchemaName}.{TableName}";
 }

@@ -9,11 +9,11 @@ namespace DBQueryConstructor.Controls;
 
 internal class JoinPanel : ViewGroupBox<TablePanel, ForeignTableJoinParameter>
 {
-    private readonly ComboBox _QueryJoinSelectComboBox;
-    private readonly ComboBox _QueryJoinTableSelectComboBox;
-    private readonly Label _QueryJoinEqualsLabel;
-    private readonly ComboBox _QueryJoinMainTableSelectComboBox;
-    private readonly Button _QueryJoinDeleteButton;
+    private ComboBox _QueryJoinSelectComboBox;
+    private ComboBox _QueryJoinTableSelectComboBox;
+    private Label _QueryJoinEqualsLabel;
+    private ComboBox _QueryJoinMainTableSelectComboBox;
+    private Button _QueryJoinDeleteButton;
 
     public JoinPanel(TablePanel tablePanel) : base(tablePanel)
     {
@@ -26,43 +26,11 @@ internal class JoinPanel : ViewGroupBox<TablePanel, ForeignTableJoinParameter>
         Parameter.TableName = tablePanel.Model.GetTableName();
         Text = Model.Model.GetTableName();
         BackColor = Color.Bisque;
-
-        FillPanel();
-    }
-
-    public override ForeignTableJoinParameter Parameter
-    {
-        get => base.Parameter;
-        set
-        {
-            base.Parameter = value;
-
-            if (_QueryJoinSelectComboBox == null)
-            {
-                return;
-            }
-
-            _QueryJoinSelectComboBox.SelectedItem = Parameter.Join;
-
-            if (Parameter.JoinedColumnTable != null)
-            {
-                _QueryJoinTableSelectComboBox.Items.Add(Parameter.JoinedColumnTable);
-                _QueryJoinTableSelectComboBox.SelectedItem = Parameter.JoinedColumnTable;
-            }
-
-            if (Parameter.MainColumnTable != null)
-            {
-                _QueryJoinMainTableSelectComboBox.Items.Add(Parameter.MainColumnTable);
-                _QueryJoinMainTableSelectComboBox.SelectedItem = Parameter.MainColumnTable;
-            }
-
-            ComboBox_SelectedValueChanged(null, null);
-        }
     }
 
     public ComboBox JoinMainTableColumn => _QueryJoinMainTableSelectComboBox;
 
-    private void FillPanel()
+    protected override void InitializeComponent()
     {
         QueryJoinType[] joins = Enum.GetValues<QueryJoinType>();
 
@@ -71,15 +39,14 @@ internal class JoinPanel : ViewGroupBox<TablePanel, ForeignTableJoinParameter>
         _QueryJoinSelectComboBox.SelectedValueChanged += QueryJoinSelectComboBox_SelectedValueChanged;
         _QueryJoinSelectComboBox.SelectedValueChanged += ComboBox_SelectedValueChanged;
         _QueryJoinSelectComboBox.Items.AddRange(joins.Cast<object>().ToArray());
-        _QueryJoinSelectComboBox.SelectedIndex = 0;
 
         _QueryJoinTableSelectComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
         _QueryJoinTableSelectComboBox.Dock = DockStyle.Left;
         _QueryJoinTableSelectComboBox.DropDownWidth = 275;
         _QueryJoinTableSelectComboBox.Width = 275;
-        _QueryJoinTableSelectComboBox.DropDown += QueryJoinTableSelectComboBox_DropDown;
         _QueryJoinTableSelectComboBox.SelectedValueChanged += QueryJoinTableSelectComboBox_SelectedIndexChanged;
         _QueryJoinTableSelectComboBox.SelectedValueChanged += ComboBox_SelectedValueChanged;
+        _QueryJoinTableSelectComboBox.Items.AddRange(Model.Model.Columns);
 
         _QueryJoinEqualsLabel.Text = "=";
         _QueryJoinEqualsLabel.Width = 17;
@@ -90,9 +57,9 @@ internal class JoinPanel : ViewGroupBox<TablePanel, ForeignTableJoinParameter>
         _QueryJoinMainTableSelectComboBox.Dock = DockStyle.Left;
         _QueryJoinMainTableSelectComboBox.DropDownWidth = 275;
         _QueryJoinMainTableSelectComboBox.Width = 275;
-        _QueryJoinMainTableSelectComboBox.DropDown += QueryJoinMainTableSelectComboBox_DropDown;
         _QueryJoinMainTableSelectComboBox.SelectedValueChanged += QueryJoinMainTableSelectComboBox_SelectedValueChanged;
         _QueryJoinMainTableSelectComboBox.SelectedValueChanged += ComboBox_SelectedValueChanged;
+        _QueryJoinMainTableSelectComboBox.DropDown += QueryJoinMainTableSelectComboBox_DropDown;
 
         _QueryJoinDeleteButton.ForeColor = Color.Red;
         _QueryJoinDeleteButton.Text = "Удалить";
@@ -113,6 +80,15 @@ internal class JoinPanel : ViewGroupBox<TablePanel, ForeignTableJoinParameter>
         };
 
         Controls.AddRange(controls);
+
+        _QueryJoinSelectComboBox.SelectedItem = Parameter.Join;
+        _QueryJoinTableSelectComboBox.SelectedItem = Parameter.JoinedColumnTable;
+
+        if (Parameter.MainColumnTable != null)
+        {
+            QueryJoinMainTableSelectComboBox_DropDown(null, null);
+            _QueryJoinMainTableSelectComboBox.SelectedItem = Parameter.MainColumnTable;
+        }
     }
 
     private void QueryJoinSelectComboBox_SelectedValueChanged(object sender, EventArgs e)
@@ -120,29 +96,8 @@ internal class JoinPanel : ViewGroupBox<TablePanel, ForeignTableJoinParameter>
         Parameter.Join = (QueryJoinType)_QueryJoinSelectComboBox.SelectedItem;
     }
 
-    private void QueryJoinTableSelectComboBox_DropDown(object sender, EventArgs e)
-    {
-        TableColumnModel[] columns = Model.Model.Columns;
-
-        ((JoinListView)Parent)?.ClearJoinMainTableColumns(this);
-
-        _QueryJoinTableSelectComboBox.SelectedIndex = -1;
-        _QueryJoinMainTableSelectComboBox.SelectedIndex = -1;
-
-        _QueryJoinTableSelectComboBox.Items.Clear();
-        _QueryJoinMainTableSelectComboBox.Items.Clear();
-        _QueryJoinTableSelectComboBox.Items.AddRange(columns);
-    }
-
     private void QueryJoinTableSelectComboBox_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (_QueryJoinTableSelectComboBox.SelectedIndex == -1)
-        {
-            Parameter.JoinedColumnTable = null;
-
-            return;
-        }
-
         Parameter.JoinedColumnTable = (TableColumnModel)_QueryJoinTableSelectComboBox.SelectedItem;
     }
 

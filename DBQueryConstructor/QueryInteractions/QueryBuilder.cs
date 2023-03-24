@@ -81,12 +81,24 @@ internal class QueryBuilder
             return;
         }
 
+        bool isFirstCondition = true;
+
         _Conditions.Sort();
-        _stringBuilder.Append("\r\nWHERE ");
 
         for (int index = 0; index < _Conditions.Count; index++)
         {
             QueryConditionParameter currentParameter = _Conditions[index];
+
+            if (!currentParameter.Valid())
+            {
+                continue;
+            }
+
+            if (isFirstCondition)
+            {
+                _stringBuilder.Append("\r\nWHERE ");
+                isFirstCondition = false;
+            }
 
             if (index != 0)
             {

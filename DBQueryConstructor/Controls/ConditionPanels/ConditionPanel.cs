@@ -37,33 +37,9 @@ internal class ConditionPanel : ViewGroupBox<TablePanel, QueryConditionParameter
         Parameter.TableName = panel.Model.GetTableName();
         Text = Model.Model.GetTableName();
         BackColor = Color.Bisque;
-
-        FillPanel();
     }
 
-    public override QueryConditionParameter Parameter
-    {
-        get => base.Parameter;
-        set
-        {
-            base.Parameter = value;
-
-            if (_ConditionComboBox == null)
-            {
-                return;
-            }
-
-            _ConditionComboBox.SelectedItem = Parameter.Condition;
-            _ColumnComboBox.SelectedItem = Parameter.Column;
-            _EqualComboBox.SelectedItem = Parameter.Equal;
-            _ParameterValue.Text = Parameter.ParameterValue?.ToString();
-            _ParameterIsNull.Checked = Parameter.IsNull;
-
-            OnDataChanged();
-        }
-    }
-
-    private void FillPanel()
+    protected override void InitializeComponent()
     {
         QueryConditionType[] conditions = Enum.GetValues<QueryConditionType>();
 
@@ -109,6 +85,12 @@ internal class ConditionPanel : ViewGroupBox<TablePanel, QueryConditionParameter
         _DeleteButton.FlatAppearance.MouseOverBackColor = Color.Transparent;
         _DeleteButton.FlatAppearance.MouseDownBackColor = Color.Transparent;
         _DeleteButton.Click += DeleteButton_Click;
+
+        _ConditionComboBox.SelectedItem = Parameter.Condition;
+        _ColumnComboBox.SelectedItem = Parameter.Column;
+        _EqualComboBox.SelectedItem = Parameter.Equal;
+        _ParameterValue.Text = Parameter.ParameterValue?.ToString();
+        _ParameterIsNull.Checked = Parameter.IsNull;
 
         Control[] controls = new Control[]
         {

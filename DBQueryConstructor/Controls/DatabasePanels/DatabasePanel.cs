@@ -86,8 +86,6 @@ internal class DatabasePanel : Panel
         rootNode.ImageKey = "databaseview";
         rootNode.SelectedImageKey = "databaseview";
 
-        List<TableTreeNode> nodes = new List<TableTreeNode>();
-        TableModel[] tables = Program.UsedDatabase.Table.ToArray();
         TableColumnModel[] tablesColumns = Program.UsedDatabase.TableColumn.ToArray();
 
         if (tablesColumns.Length == 0)
@@ -95,15 +93,17 @@ internal class DatabasePanel : Panel
             return;
         }
 
+        List<TableTreeNode> nodes = new List<TableTreeNode>();
+        TableModel[] tables = Program.UsedDatabase.Table.ToArray();
         TableConstraintModel[] tableConstraints = Program.UsedDatabase.TableConstraint.ToArray();
         ColumnConstraintModel[] columnConstraints = Program.UsedDatabase.ColumnConstraint.ToArray();
         IEnumerable<IGrouping<string, TableColumnModel>> tableGroup = tablesColumns
-            .GroupBy(currentColumn => $"{currentColumn.TableSchema}.{currentColumn.TableName}");
+            .GroupBy(currentColumn => currentColumn.GetTableName());
 
         foreach (IGrouping<string, TableColumnModel> currentGroup in tableGroup)
         {
             TableModel selectedTable = tables
-                .FirstOrDefault(currentTable => $"{currentTable.Schema}.{currentTable.Name}" == currentGroup.Key);
+                .FirstOrDefault(currentTable => currentTable.GetTableName() == currentGroup.Key);
 
             if (selectedTable == null)
             {
@@ -114,8 +114,7 @@ internal class DatabasePanel : Panel
 
             TableTreeNode tableTreeNode = new TableTreeNode(selectedTable);
             TableConstraintModel[] selectedTableConstraints = tableConstraints
-                .Where(currentTableConstraint =>
-                    $"{currentTableConstraint.SchemaName}.{currentTableConstraint.TableName}" == currentGroup.Key)
+                .Where(currentTableConstraint => currentTableConstraint.GetTableName() == currentGroup.Key)
                 .ToArray();
 
             nodes.Add(tableTreeNode);

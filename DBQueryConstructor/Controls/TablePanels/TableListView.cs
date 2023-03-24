@@ -72,7 +72,6 @@ internal class TableListView : ListViewPanel<TablePanel>
         addedTablePanel.DataChanged += TablePanelDataChanged;
 
         OnDataChanged();
-        base.OnControlAdded(e);
     }
 
     private void FillContextMenu()
@@ -99,25 +98,15 @@ internal class TableListView : ListViewPanel<TablePanel>
         Controls.Remove(parent);
     }
 
-    public override void AddPanel(TablePanel panel)
-    {
-        if (panel == null)
-        {
-            throw new ArgumentNullException(nameof(panel));
-        }
-
-        if (!panel.Parameter.IsMainTable)
-        {
-            panel.ContextMenuStrip = _contextMenuStrip;
-        }
-
-        Controls.Add(panel);
-    }
-
     public TablePanel CreateTablePanel(TableModel model)
     {
         bool isMainTable = Controls.Count == 0;
         TablePanel newTablePanel = new TablePanel(model);
+
+        if (!isMainTable)
+        {
+            newTablePanel.ContextMenuStrip = _contextMenuStrip;
+        }
 
         newTablePanel.Parameter.IsMainTable = isMainTable;
         newTablePanel.ColumnEnable = isMainTable;
