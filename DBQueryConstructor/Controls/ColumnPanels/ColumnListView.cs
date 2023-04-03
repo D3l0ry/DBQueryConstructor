@@ -8,8 +8,9 @@ internal class ColumnListView : ListViewPanel<ColumnPanel>
 
     protected override void OnControlAdded(ControlEventArgs e)
     {
-        ColumnPanel newPanel = (ColumnPanel)e.Control;
-        newPanel.DataChanged += Panel_DataChanged;
+        ColumnPanel addedColumnPanel = (ColumnPanel)e.Control;
+
+        addedColumnPanel.DataChanged += Panel_DataChanged;
     }
 
     private void Panel_DataChanged(object sender, EventArgs e) => OnDataChanged();

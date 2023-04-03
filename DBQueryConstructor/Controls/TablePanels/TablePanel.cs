@@ -23,6 +23,19 @@ internal class TablePanel : ViewGroupBox<TableModel, TableParameter>
         _QueryColumns = new List<ColumnPanel>();
         _QueryConditions = new List<ConditionPanel>();
 
+        foreach (TableColumnModel currentColumn in Model.Columns)
+        {
+            ColumnCheckBox newColumnCheckBox = new ColumnCheckBox(currentColumn);
+            ColumnPanel newColumnPanel = new ColumnPanel(newColumnCheckBox);
+
+            newColumnCheckBox.Dock = DockStyle.Top;
+            newColumnCheckBox.Text = currentColumn.Name;
+            newColumnCheckBox.CheckedChanged += CheckBox_CheckedChanged;
+
+            _QueryColumns.Add(newColumnPanel);
+            _ColumnPanel.Controls.Add(newColumnCheckBox);
+        }
+
         Parameter.Table = table;
         AutoSize = true;
         MinimumSize = new Size(175, 50);
@@ -69,19 +82,6 @@ internal class TablePanel : ViewGroupBox<TableModel, TableParameter>
         topPanelLabel.Text = Model.GetTableName();
         topPanelLabel.Enabled = false;
         topPanelLabel.Dock = DockStyle.Top;
-
-        foreach (TableColumnModel currentColumn in Model.Columns)
-        {
-            ColumnCheckBox newColumnCheckBox = new ColumnCheckBox(currentColumn);
-            ColumnPanel newColumnPanel = new ColumnPanel(newColumnCheckBox);
-
-            newColumnCheckBox.Dock = DockStyle.Top;
-            newColumnCheckBox.Text = currentColumn.Name;
-            newColumnCheckBox.CheckedChanged += CheckBox_CheckedChanged;
-
-            _QueryColumns.Add(newColumnPanel);
-            _ColumnPanel.Controls.Add(newColumnCheckBox);
-        }
 
         Controls.Add(_ColumnPanel);
         Controls.Add(topPanel);

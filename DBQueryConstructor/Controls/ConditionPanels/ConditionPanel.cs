@@ -47,15 +47,15 @@ internal class ConditionPanel : ViewGroupBox<TablePanel, QueryConditionParameter
         _ConditionComboBox.Dock = DockStyle.Left;
         _ConditionComboBox.Items.AddRange(conditions.Cast<object>().ToArray());
         _ConditionComboBox.SelectedIndex = 0;
-        _ConditionComboBox.SelectedValueChanged += ConditionComboBox_SelectedValueChanged;
-        _ConditionComboBox.SelectedValueChanged += ValueChanged;
+        _ConditionComboBox.SelectedIndexChanged += ConditionComboBox_ItemChanged;
+        _ConditionComboBox.SelectedIndexChanged += ValueChanged;
 
         _ColumnComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
         _ColumnComboBox.DropDownWidth = 300;
         _ColumnComboBox.Width = 200;
         _ColumnComboBox.Dock = DockStyle.Left;
-        _ColumnComboBox.SelectedValueChanged += ColumnComboBox_SelectedValueChanged;
-        _ColumnComboBox.SelectedValueChanged += ValueChanged;
+        _ColumnComboBox.SelectedIndexChanged += ColumnComboBox_ItemChanged;
+        _ColumnComboBox.SelectedIndexChanged += ValueChanged;
         _ColumnComboBox.Items.AddRange(Model.Model.Columns);
 
         _EqualComboBox.Items.AddRange(_Equals);
@@ -63,8 +63,8 @@ internal class ConditionPanel : ViewGroupBox<TablePanel, QueryConditionParameter
         _EqualComboBox.Dock = DockStyle.Left;
         _EqualComboBox.DropDownWidth = 125;
         _EqualComboBox.SelectedIndex = 0;
-        _EqualComboBox.SelectedValueChanged += EqualComboBox_SelectedValueChanged;
-        _EqualComboBox.SelectedValueChanged += ValueChanged;
+        _EqualComboBox.SelectedIndexChanged += EqualComboBox_ItemChanged;
+        _EqualComboBox.SelectedIndexChanged += ValueChanged;
 
         _ParameterValue.Width = 275;
         _ParameterValue.Dock = DockStyle.Left;
@@ -105,17 +105,17 @@ internal class ConditionPanel : ViewGroupBox<TablePanel, QueryConditionParameter
         Controls.AddRange(controls);
     }
 
-    private void ConditionComboBox_SelectedValueChanged(object sender, EventArgs e)
+    private void ConditionComboBox_ItemChanged(object sender, EventArgs e)
     {
         Parameter.Condition = (QueryConditionType)_ConditionComboBox.SelectedItem;
     }
 
-    private void ColumnComboBox_SelectedValueChanged(object sender, EventArgs e)
+    private void ColumnComboBox_ItemChanged(object sender, EventArgs e)
     {
         Parameter.Column = (TableColumnModel)_ColumnComboBox.SelectedItem;
     }
 
-    private void EqualComboBox_SelectedValueChanged(object sender, EventArgs e)
+    private void EqualComboBox_ItemChanged(object sender, EventArgs e)
     {
         Parameter.Equal = (string)_EqualComboBox.SelectedItem;
     }

@@ -20,7 +20,8 @@ internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryFieldParameter>
 
     protected override void InitializeComponent()
     {
-        Label aliasLabel = new Label();
+        Label aliasLabel = new();
+
         aliasLabel.Dock = DockStyle.Left;
         aliasLabel.Text = "Псевдоним";
 
@@ -41,6 +42,7 @@ internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryFieldParameter>
     private void Alias_TextChanged(object sender, EventArgs e)
     {
         TextBox aliasTextBox = (TextBox)sender;
+
         Parameter.ColumnAlias = aliasTextBox.Text.Trim();
 
         OnDataChanged();

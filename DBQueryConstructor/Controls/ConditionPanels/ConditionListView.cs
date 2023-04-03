@@ -47,10 +47,10 @@ internal class ConditionListView : ListViewPanel<ConditionPanel>
 
     protected override void OnControlAdded(ControlEventArgs e)
     {
-        ConditionPanel conditionPanel = (ConditionPanel)e.Control;
-        conditionPanel.DataChanged += ConditionDataChanged;
+        ConditionPanel addedConditionPanel = (ConditionPanel)e.Control;
+        addedConditionPanel.DataChanged += ConditionDataChanged;
+        addedConditionPanel.Model.QueryConditions.Add(addedConditionPanel);
 
-        conditionPanel.Model.QueryConditions.Add(conditionPanel);
         OnDataChanged();
     }
 
