@@ -20,15 +20,9 @@ public partial class MainForm : Form
         }
     }
 
-    private void ClearConstructor()
-    {
-        foreach (ConstructorTabPage currentTabPage in queryConstructorTabControl.TabPages)
-        {
-            currentTabPage.ClearConstructor();
-        }
-    }
+    private void DatabasePanel_OpenConnection(object sender, EventArgs e) => queryConstructorQueryExecuteButton.Enabled = true;
 
-    private void DatabasePanel_CloseConnection(object sender, EventArgs e) => ClearConstructor();
+    private void DatabasePanel_CloseConnection(object sender, EventArgs e) => queryConstructorQueryExecuteButton.Enabled = false;
 
     private void ClearConstructorToolStripButton_Click(object sender, EventArgs e)
     {

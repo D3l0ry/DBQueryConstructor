@@ -209,15 +209,13 @@ internal class ConstructorTabPage : TabPage
             return;
         }
 
-        DbCommand command = Program.UsedDatabase.Connection.CreateCommand();
-        DbDataReader dataReader = null;
-
-        command.CommandText = _queryTextBox.Text;
-
         try
         {
+            DbCommand command = Program.UsedDatabase.Connection.CreateCommand();
+            command.CommandText = _queryTextBox.Text;
+
+            using DbDataReader dataReader = command.ExecuteReader();
             int rowNumber = 1;
-            dataReader = command.ExecuteReader();
 
             for (int index = 0; index < dataReader.FieldCount; index++)
             {
@@ -241,8 +239,6 @@ internal class ConstructorTabPage : TabPage
 
                 rowNumber++;
             }
-
-            //queryConstructorMiscResultRowCountLabel.Text = _resultDataGrid.RowCount.ToString();
         }
         catch (Exception ex)
         {
@@ -258,8 +254,6 @@ internal class ConstructorTabPage : TabPage
         }
         finally
         {
-            dataReader?.Close();
-
             _constructorMiscTabControl.SelectedIndex = _constructorMiscTabControl.TabCount - 1;
         }
     }

@@ -34,6 +34,8 @@ internal class DatabasePanel : Panel
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public TreeView DatabaseTableTreeView { get; private set; }
 
+    public event EventHandler OpenConnection;
+
     public event EventHandler CloseConnection;
 
     private void FillPanel()
@@ -165,7 +167,8 @@ internal class DatabasePanel : Panel
         }
 
         DatabaseTableTreeView.Nodes.Clear();
-        OnClosedConnection();
+
+        OnOpenConnection();
         FillTableTreeView();
     }
 
@@ -204,6 +207,8 @@ internal class DatabasePanel : Panel
 
         e.Effect = DragDropEffects.Move;
     }
+
+    public void OnOpenConnection() => OpenConnection?.Invoke(this, EventArgs.Empty);
 
     public void OnClosedConnection() => CloseConnection?.Invoke(this, EventArgs.Empty);
 }

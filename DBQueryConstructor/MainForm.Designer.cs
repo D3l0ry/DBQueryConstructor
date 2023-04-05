@@ -38,12 +38,12 @@ namespace DBQueryConstructor
             this.databasePanel = new DBQueryConstructor.Controls.DatabasePanels.DatabasePanel();
             this.queryConstructorToolStrip = new System.Windows.Forms.ToolStrip();
             this.clearConstructorToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.addNewConstructorToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorOpenToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorSaveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.queryConstructorQueryExecuteButton = new System.Windows.Forms.ToolStripButton();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.addNewConstructorToolStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.mainFormSplitContainer)).BeginInit();
             this.mainFormSplitContainer.Panel1.SuspendLayout();
             this.mainFormSplitContainer.Panel2.SuspendLayout();
@@ -98,6 +98,7 @@ namespace DBQueryConstructor
             this.databasePanel.Name = "databasePanel";
             this.databasePanel.Size = new System.Drawing.Size(200, 511);
             this.databasePanel.TabIndex = 0;
+            this.databasePanel.OpenConnection += new System.EventHandler(this.DatabasePanel_OpenConnection);
             this.databasePanel.CloseConnection += new System.EventHandler(this.DatabasePanel_CloseConnection);
             // 
             // queryConstructorToolStrip
@@ -126,6 +127,15 @@ namespace DBQueryConstructor
             this.clearConstructorToolStripButton.Text = "Очистить конструктор";
             this.clearConstructorToolStripButton.Click += new System.EventHandler(this.ClearConstructorToolStripButton_Click);
             // 
+            // addNewConstructorToolStripButton
+            // 
+            this.addNewConstructorToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("addNewConstructorToolStripButton.Image")));
+            this.addNewConstructorToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addNewConstructorToolStripButton.Name = "addNewConstructorToolStripButton";
+            this.addNewConstructorToolStripButton.Size = new System.Drawing.Size(77, 22);
+            this.addNewConstructorToolStripButton.Text = "Добавить";
+            this.addNewConstructorToolStripButton.Click += new System.EventHandler(this.AddNewConstructorToolStripButton_Click);
+            // 
             // queryConstructorOpenToolStripButton
             // 
             this.queryConstructorOpenToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("queryConstructorOpenToolStripButton.Image")));
@@ -147,6 +157,7 @@ namespace DBQueryConstructor
             // 
             // queryConstructorQueryExecuteButton
             // 
+            this.queryConstructorQueryExecuteButton.Enabled = false;
             this.queryConstructorQueryExecuteButton.Image = global::DBQueryConstructor.Properties.Resources.play;
             this.queryConstructorQueryExecuteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.queryConstructorQueryExecuteButton.Name = "queryConstructorQueryExecuteButton";
@@ -161,15 +172,6 @@ namespace DBQueryConstructor
             // openFileDialog
             // 
             this.openFileDialog.Filter = "Сохранение конструктора|*.dbcs";
-            // 
-            // addNewConstructorToolStripButton
-            // 
-            this.addNewConstructorToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("addNewConstructorToolStripButton.Image")));
-            this.addNewConstructorToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addNewConstructorToolStripButton.Name = "addNewConstructorToolStripButton";
-            this.addNewConstructorToolStripButton.Size = new System.Drawing.Size(77, 22);
-            this.addNewConstructorToolStripButton.Text = "Добавить";
-            this.addNewConstructorToolStripButton.Click += new System.EventHandler(this.AddNewConstructorToolStripButton_Click);
             // 
             // MainForm
             // 
