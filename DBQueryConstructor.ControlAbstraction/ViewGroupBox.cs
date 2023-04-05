@@ -1,8 +1,11 @@
-﻿namespace DBQueryConstructor.ControlAbstraction;
+﻿using System.ComponentModel;
+
+namespace DBQueryConstructor.ControlAbstraction;
 
 public abstract class ViewGroupBox<TableModel, QueryParameter> : GroupBox where QueryParameter : new()
 {
-    private readonly TableModel _Model;
+    private readonly TableModel _model;
+    private readonly QueryParameter _parameter;
 
     public ViewGroupBox(TableModel model) : base()
     {
@@ -11,16 +14,21 @@ public abstract class ViewGroupBox<TableModel, QueryParameter> : GroupBox where 
             throw new ArgumentNullException(nameof(model));
         }
 
-        _Model = model;
-        Parameter = new QueryParameter();
+        _model = model;
+        _parameter = new QueryParameter();
+
+        if (_parameter is INotifyPropertyChanged notify)
+        {
+            notify.PropertyChanged += Notify_PropertyChanged;
+        }
 
         Padding = new Padding(5);
         Height = 50;
     }
 
-    public TableModel Model => _Model;
+    public TableModel Model => _model;
 
-    public virtual QueryParameter Parameter { get; private set; }
+    public virtual QueryParameter Parameter => _parameter;
 
     public event EventHandler DataChanged;
 
@@ -31,6 +39,8 @@ public abstract class ViewGroupBox<TableModel, QueryParameter> : GroupBox where 
         InitializeComponent();
         base.OnCreateControl();
     }
+
+    private void Notify_PropertyChanged(object sender, PropertyChangedEventArgs e) => OnDataChanged();
 
     public virtual void OnDataChanged() => DataChanged?.Invoke(this, EventArgs.Empty);
 }

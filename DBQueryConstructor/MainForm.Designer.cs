@@ -43,6 +43,7 @@ namespace DBQueryConstructor
             this.queryConstructorQueryExecuteButton = new System.Windows.Forms.ToolStripButton();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.addNewConstructorToolStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.mainFormSplitContainer)).BeginInit();
             this.mainFormSplitContainer.Panel1.SuspendLayout();
             this.mainFormSplitContainer.Panel2.SuspendLayout();
@@ -66,9 +67,9 @@ namespace DBQueryConstructor
             this.queryConstructorTabControl.ItemSize = new System.Drawing.Size(31, 20);
             this.queryConstructorTabControl.Location = new System.Drawing.Point(0, 25);
             this.queryConstructorTabControl.Name = "queryConstructorTabControl";
+            this.queryConstructorTabControl.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.queryConstructorTabControl.SelectedIndex = 0;
             this.queryConstructorTabControl.Size = new System.Drawing.Size(979, 486);
-            this.queryConstructorTabControl.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.queryConstructorTabControl.TabIndex = 1;
             // 
             // mainFormSplitContainer
@@ -93,7 +94,6 @@ namespace DBQueryConstructor
             // databasePanel
             // 
             this.databasePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.databasePanel.ImageList = this.treeViewImageList;
             this.databasePanel.Location = new System.Drawing.Point(0, 0);
             this.databasePanel.Name = "databasePanel";
             this.databasePanel.Size = new System.Drawing.Size(200, 511);
@@ -105,6 +105,7 @@ namespace DBQueryConstructor
             this.queryConstructorToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.queryConstructorToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearConstructorToolStripButton,
+            this.addNewConstructorToolStripButton,
             this.queryConstructorOpenToolStripButton,
             this.queryConstructorSaveToolStripButton,
             this.queryConstructorQueryExecuteButton});
@@ -161,6 +162,15 @@ namespace DBQueryConstructor
             // 
             this.openFileDialog.Filter = "Сохранение конструктора|*.dbcs";
             // 
+            // addNewConstructorToolStripButton
+            // 
+            this.addNewConstructorToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("addNewConstructorToolStripButton.Image")));
+            this.addNewConstructorToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addNewConstructorToolStripButton.Name = "addNewConstructorToolStripButton";
+            this.addNewConstructorToolStripButton.Size = new System.Drawing.Size(77, 22);
+            this.addNewConstructorToolStripButton.Text = "Добавить";
+            this.addNewConstructorToolStripButton.Click += new System.EventHandler(this.AddNewConstructorToolStripButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -195,5 +205,6 @@ namespace DBQueryConstructor
         private ToolStripButton queryConstructorOpenToolStripButton;
         private SaveFileDialog saveFileDialog;
         private OpenFileDialog openFileDialog;
+        private ToolStripButton addNewConstructorToolStripButton;
     }
 }

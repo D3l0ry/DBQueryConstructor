@@ -25,6 +25,7 @@ internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryFieldParameter>
         aliasLabel.Dock = DockStyle.Left;
         aliasLabel.Text = "Псевдоним";
 
+        _AliasTextBox.Text = Parameter.ColumnAlias;
         _AliasTextBox.Dock = DockStyle.Left;
         _AliasTextBox.Width = 150;
         _AliasTextBox.KeyPress += AliasTextBox_KeyPress;
@@ -44,7 +45,5 @@ internal class ColumnPanel : ViewGroupBox<ColumnCheckBox, QueryFieldParameter>
         TextBox aliasTextBox = (TextBox)sender;
 
         Parameter.ColumnAlias = aliasTextBox.Text.Trim();
-
-        OnDataChanged();
     }
 }

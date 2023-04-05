@@ -153,8 +153,6 @@ internal class JoinPanel : ViewGroupBox<TablePanel, ForeignTableJoinParameter>
     private void ComboBox_SelectedValueChanged(object sender, EventArgs e)
     {
         Model.ColumnEnable = Parameter.Validate();
-
-        OnDataChanged();
     }
 
     private void QueryJoinDeleteButton_Click(object sender, EventArgs e)

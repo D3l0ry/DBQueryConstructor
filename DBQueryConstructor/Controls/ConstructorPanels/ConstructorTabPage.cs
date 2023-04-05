@@ -200,10 +200,9 @@ internal class ConstructorTabPage : TabPage
     public void ExecuteQuery()
     {
         _resultDataGrid.Visible = true;
-
-        _queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryError");
         _resultDataGrid.Rows.Clear();
         _resultDataGrid.Columns.Clear();
+        _queryConstructorMiscResultTabPage.Controls.RemoveByKey("queryError");
 
         if (string.IsNullOrWhiteSpace(_queryTextBox.Text))
         {

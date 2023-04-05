@@ -48,14 +48,12 @@ internal class ConditionPanel : ViewGroupBox<TablePanel, QueryConditionParameter
         _ConditionComboBox.Items.AddRange(conditions.Cast<object>().ToArray());
         _ConditionComboBox.SelectedIndex = 0;
         _ConditionComboBox.SelectedIndexChanged += ConditionComboBox_ItemChanged;
-        _ConditionComboBox.SelectedIndexChanged += ValueChanged;
 
         _ColumnComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
         _ColumnComboBox.DropDownWidth = 300;
         _ColumnComboBox.Width = 200;
         _ColumnComboBox.Dock = DockStyle.Left;
         _ColumnComboBox.SelectedIndexChanged += ColumnComboBox_ItemChanged;
-        _ColumnComboBox.SelectedIndexChanged += ValueChanged;
         _ColumnComboBox.Items.AddRange(Model.Model.Columns);
 
         _EqualComboBox.Items.AddRange(_Equals);
@@ -64,18 +62,15 @@ internal class ConditionPanel : ViewGroupBox<TablePanel, QueryConditionParameter
         _EqualComboBox.DropDownWidth = 125;
         _EqualComboBox.SelectedIndex = 0;
         _EqualComboBox.SelectedIndexChanged += EqualComboBox_ItemChanged;
-        _EqualComboBox.SelectedIndexChanged += ValueChanged;
 
         _ParameterValue.Width = 275;
         _ParameterValue.Dock = DockStyle.Left;
         _ParameterValue.TextChanged += ParameterValue_TextChanged;
-        _ParameterValue.TextChanged += ValueChanged;
 
         _ParameterIsNull.Dock = DockStyle.Left;
         _ParameterIsNull.Text = "NULL";
         _ParameterIsNull.Padding = new Padding(7, 0, 0, 3);
         _ParameterIsNull.CheckedChanged += ParameterIsNull_CheckedChanged;
-        _ParameterIsNull.CheckedChanged += ValueChanged;
 
         _DeleteButton.ForeColor = Color.Red;
         _DeleteButton.Text = "Удалить";
@@ -129,8 +124,6 @@ internal class ConditionPanel : ViewGroupBox<TablePanel, QueryConditionParameter
     {
         Parameter.IsNull = _ParameterIsNull.Checked;
     }
-
-    private void ValueChanged(object sender, EventArgs e) => OnDataChanged();
 
     private void DeleteButton_Click(object sender, EventArgs e)
     {

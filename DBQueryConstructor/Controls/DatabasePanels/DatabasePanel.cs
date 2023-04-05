@@ -8,25 +8,23 @@ namespace DBQueryConstructor.Controls.DatabasePanels;
 
 internal class DatabasePanel : Panel
 {
-    private readonly TreeView _DatabaseTableTreeView;
-
     public DatabasePanel() : base()
     {
-        _DatabaseTableTreeView = new TreeView();
-        _DatabaseTableTreeView.AllowDrop = true;
-        _DatabaseTableTreeView.BackColor = Color.White;
-        _DatabaseTableTreeView.BorderStyle = BorderStyle.None;
-        _DatabaseTableTreeView.Dock = DockStyle.Fill;
-        _DatabaseTableTreeView.ImageIndex = 0;
-        _DatabaseTableTreeView.Indent = 19;
-        _DatabaseTableTreeView.ItemHeight = 21;
-        _DatabaseTableTreeView.Location = new Point(0, 25);
-        _DatabaseTableTreeView.Name = "databaseTableTreeView";
-        _DatabaseTableTreeView.SelectedImageIndex = 0;
-        _DatabaseTableTreeView.Size = new Size(198, 484);
-        _DatabaseTableTreeView.TabIndex = 1;
-        _DatabaseTableTreeView.ItemDrag += DatabaseTableTreeView_ItemDrag;
-        _DatabaseTableTreeView.DragEnter += DatabaseTableTreeView_DragEnter;
+        DatabaseTableTreeView = new TreeView();
+        DatabaseTableTreeView.AllowDrop = true;
+        DatabaseTableTreeView.BackColor = Color.White;
+        DatabaseTableTreeView.BorderStyle = BorderStyle.None;
+        DatabaseTableTreeView.Dock = DockStyle.Fill;
+        DatabaseTableTreeView.ImageIndex = 0;
+        DatabaseTableTreeView.Indent = 19;
+        DatabaseTableTreeView.ItemHeight = 21;
+        DatabaseTableTreeView.Location = new Point(0, 25);
+        DatabaseTableTreeView.Name = "databaseTableTreeView";
+        DatabaseTableTreeView.SelectedImageIndex = 0;
+        DatabaseTableTreeView.Size = new Size(198, 484);
+        DatabaseTableTreeView.TabIndex = 1;
+        DatabaseTableTreeView.ItemDrag += DatabaseTableTreeView_ItemDrag;
+        DatabaseTableTreeView.DragEnter += DatabaseTableTreeView_DragEnter;
 
         FillPanel();
     }
@@ -34,11 +32,7 @@ internal class DatabasePanel : Panel
     [Browsable(true)]
     [EditorBrowsable(EditorBrowsableState.Always)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-    public ImageList ImageList
-    {
-        get => _DatabaseTableTreeView.ImageList;
-        set => _DatabaseTableTreeView.ImageList = value;
-    }
+    public TreeView DatabaseTableTreeView { get; private set; }
 
     public event EventHandler CloseConnection;
 
@@ -76,13 +70,13 @@ internal class DatabasePanel : Panel
                 closeConnectionDatabaseToolStripButton
             });
 
-        Controls.Add(_DatabaseTableTreeView);
+        Controls.Add(DatabaseTableTreeView);
         Controls.Add(databaseToolStrip);
     }
 
     private void FillTableTreeView()
     {
-        TreeNode rootNode = _DatabaseTableTreeView.Nodes.Add(Program.UsedDatabase.Connection.Database);
+        TreeNode rootNode = DatabaseTableTreeView.Nodes.Add(Program.UsedDatabase.Connection.Database);
         rootNode.ImageKey = "databaseview";
         rootNode.SelectedImageKey = "databaseview";
 
@@ -170,14 +164,14 @@ internal class DatabasePanel : Panel
             return;
         }
 
-        _DatabaseTableTreeView.Nodes.Clear();
+        DatabaseTableTreeView.Nodes.Clear();
         OnClosedConnection();
         FillTableTreeView();
     }
 
     private void CloseConnectionDatabaseToolStripButton_Click(object sender, EventArgs e)
     {
-        _DatabaseTableTreeView.Nodes.Clear();
+        DatabaseTableTreeView.Nodes.Clear();
         OnClosedConnection();
 
         Program.UsedDatabase?.Dispose();

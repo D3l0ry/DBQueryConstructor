@@ -1,21 +1,70 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 using DBQueryConstructor.DatabaseInteractions.Models;
 using DBQueryConstructor.QueryInteractions;
 
 namespace DBQueryConstructor.Parameters;
 
-internal class ForeignTableJoinParameter : IComparable<ForeignTableJoinParameter>
+internal class ForeignTableJoinParameter : IComparable<ForeignTableJoinParameter>, INotifyPropertyChanged
 {
+    private TableColumnModel _mainColumn;
+    private TableColumnModel _joinedColumn;
+    private QueryJoinType _join;
+
     public int Index { get; set; }
 
     public string TableName { get; set; }
 
-    public TableColumnModel MainColumnTable { get; set; }
+    public TableColumnModel MainColumnTable
+    {
+        get => _mainColumn;
+        set
+        {
+            if (_mainColumn == value)
+            {
+                return;
+            }
 
-    public TableColumnModel JoinedColumnTable { get; set; }
+            _mainColumn = value;
+            OnPropertyChanged();
+        }
+    }
 
-    public QueryJoinType Join { get; set; }
+    public TableColumnModel JoinedColumnTable
+    {
+        get => _joinedColumn;
+        set
+        {
+            if (_joinedColumn == value)
+            {
+                return;
+            }
+
+            _joinedColumn = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public QueryJoinType Join
+    {
+        get => _join;
+        set
+        {
+            if (_join == value)
+            {
+                return;
+            }
+
+            _join = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string propertyName = "") => PropertyChanged?.Invoke(this, new(propertyName));
 
     public bool Validate() => JoinedColumnTable != null && MainColumnTable != null;
 

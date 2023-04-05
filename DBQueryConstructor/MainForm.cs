@@ -53,6 +53,15 @@ public partial class MainForm : Form
         selectedTab.ClearConstructor();
     }
 
+    private void AddNewConstructorToolStripButton_Click(object sender, EventArgs e)
+    {
+        string tabPageName = $"query{queryConstructorTabControl.TabPages.Count}";
+        ConstructorTabPage newTabPage = new(tabPageName);
+
+        queryConstructorTabControl.TabPages.Add(newTabPage);
+        queryConstructorTabControl.SelectedTab = newTabPage;
+    }
+
     private void QueryConstructorOpenToolStripButton_Click(object sender, EventArgs e)
     {
         if (openFileDialog.ShowDialog() != DialogResult.OK)
@@ -73,6 +82,7 @@ public partial class MainForm : Form
 
             newTabPage.LoadQueryStored(stored);
             queryConstructorTabControl.TabPages.Add(newTabPage);
+            queryConstructorTabControl.SelectedTab = newTabPage;
 
             return;
         }

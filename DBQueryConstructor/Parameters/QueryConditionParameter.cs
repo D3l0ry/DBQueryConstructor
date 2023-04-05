@@ -1,25 +1,102 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 using DBQueryConstructor.DatabaseInteractions.Models;
 using DBQueryConstructor.QueryInteractions;
 
 namespace DBQueryConstructor.Parameters;
 
-internal class QueryConditionParameter : IComparable<QueryConditionParameter>
+internal class QueryConditionParameter : IComparable<QueryConditionParameter>, INotifyPropertyChanged
 {
+    private QueryConditionType _condition;
+    private string _equal;
+    private TableColumnModel _column;
+    private object _parameterValue;
+    private bool _isNull;
+
     public int Index { get; set; }
 
     public string TableName { get; set; }
 
-    public QueryConditionType Condition { get; set; }
+    public QueryConditionType Condition
+    {
+        get => _condition;
+        set
+        {
+            if (_condition == value)
+            {
+                return;
+            }
 
-    public string Equal { get; set; }
+            _condition = value;
+            OnPropertyChanged();
+        }
+    }
 
-    public TableColumnModel Column { get; set; }
+    public string Equal
+    {
+        get => _equal;
+        set
+        {
+            if (_equal == value)
+            {
+                return;
+            }
 
-    public object ParameterValue { get; set; }
+            _equal = value;
+            OnPropertyChanged();
+        }
+    }
 
-    public bool IsNull { get; set; }
+    public TableColumnModel Column
+    {
+        get => _column;
+        set
+        {
+            if (_column == value)
+            {
+                return;
+            }
+
+            _column = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public object ParameterValue
+    {
+        get => _parameterValue;
+        set
+        {
+            if (_parameterValue == value)
+            {
+                return;
+            }
+
+            _parameterValue = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsNull
+    {
+        get => _isNull;
+        set
+        {
+            if (_isNull == value)
+            {
+                return;
+            }
+
+            _isNull = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string propertyName = "") => PropertyChanged?.Invoke(this, new(propertyName));
 
     public bool Valid() => Column != null;
 

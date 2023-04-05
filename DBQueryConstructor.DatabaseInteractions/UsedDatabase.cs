@@ -5,6 +5,9 @@ using Handy.MsSql;
 
 namespace DBQueryConstructor.DatabaseInteractions;
 
+/// <summary>
+/// Класс для работы с указанной базой данных
+/// </summary>
 public class UsedDatabase : DatabaseContext
 {
     public UsedDatabase(string connection) : base(connection) { }

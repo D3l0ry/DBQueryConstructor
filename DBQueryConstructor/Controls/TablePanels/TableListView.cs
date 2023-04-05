@@ -52,8 +52,8 @@ internal class TableListView : ListViewPanel<TablePanel>
 
         if (isExists)
         {
-            const string message = "Такая таблица уже добавлена в конструктор!";
             const string title = "Ошибка добавления таблицы";
+            const string message = "Такая таблица уже добавлена в конструктор!";
 
             MessageBox
                 .Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
