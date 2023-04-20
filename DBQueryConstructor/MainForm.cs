@@ -1,6 +1,8 @@
+using System.Data.Common;
 using System.Text.Json;
 
 using DBQueryConstructor.Controls.ConstructorPanels;
+using DBQueryConstructor.DatabaseInteractions;
 using DBQueryConstructor.QueryInteractions;
 
 namespace DBQueryConstructor;
@@ -66,34 +68,54 @@ public partial class MainForm : Form
         using Stream storedFile = openFileDialog.OpenFile();
         QueryStored stored = JsonSerializer.Deserialize<QueryStored>(storedFile);
 
-        ConstructorTabPage finedTabPage = queryConstructorTabControl.TabPages
+        ConstructorTabPage newTabPage = queryConstructorTabControl.TabPages
             .OfType<ConstructorTabPage>()
             .FirstOrDefault(currentTabPage => currentTabPage.Text == openFileDialog.FileName);
 
-        if (finedTabPage == null)
+        if (newTabPage == null)
         {
-            ConstructorTabPage newTabPage = new(openFileDialog.FileName);
+            UsedDatabase usedDatabase = Program.UsedDatabase;
 
-            newTabPage.LoadQueryStored(stored);
+            if (usedDatabase != null)
+            {
+                DbConnection activeConnection = usedDatabase.Connection;
+
+                if (activeConnection.DataSource != stored.Server && activeConnection.Database == stored.Database)
+                {
+                    const string title = "Несовместимость серверов базы данных";
+                    const string message = "Сервер и база данных отличается от сохраеннных в файле. " +
+                        "Вы уверены, что хотите загрузить файл?";
+
+                    DialogResult result = MessageBox
+                        .Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.No)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            newTabPage = new(openFileDialog.FileName);
             queryConstructorTabControl.TabPages.Add(newTabPage);
-            queryConstructorTabControl.SelectedTab = newTabPage;
-
-            return;
         }
 
-        finedTabPage.LoadQueryStored(stored);
+        queryConstructorTabControl.SelectedTab = newTabPage;
+        newTabPage.LoadQueryStored(stored);
     }
 
     private void QueryConstructorSaveToolStripButton_Click(object sender, EventArgs e)
     {
-        if (saveFileDialog.ShowDialog() != DialogResult.OK)
+        ConstructorTabPage selectedTab = (ConstructorTabPage)queryConstructorTabControl.SelectedTab;
+
+        if (selectedTab == null)
         {
             return;
         }
 
-        ConstructorTabPage selectedTab = (ConstructorTabPage)queryConstructorTabControl.SelectedTab;
+        saveFileDialog.FileName = selectedTab.Text;
 
-        if (selectedTab == null)
+        if (saveFileDialog.ShowDialog() != DialogResult.OK)
         {
             return;
         }

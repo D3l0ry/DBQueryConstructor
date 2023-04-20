@@ -8,19 +8,23 @@ namespace DBQueryConstructor;
 public partial class ConnectionForm : Form
 {
     private readonly RegistrySerializer<ConnectionSetting> _Serializer;
-    private ConnectionSetting _Setting;
 
     public ConnectionForm()
     {
         InitializeComponent();
 
         _Serializer = new RegistrySerializer<ConnectionSetting>();
-        _Setting = _Serializer.Deserialize();
+        ConnectionSetting settings = _Serializer.Deserialize();
 
-        serverTextBox.Text = _Setting?.Server;
-        databaseTextBox.Text = _Setting?.Database;
-        userTextBox.Text = _Setting?.Login;
-        passwordTextBox.Text = _Setting?.Password;
+        if (settings == null)
+        {
+            return;
+        }
+
+        serverTextBox.Text = settings?.Server;
+        databaseTextBox.Text = settings?.Database;
+        userTextBox.Text = settings?.Login;
+        passwordTextBox.Text = settings?.Password;
     }
 
     private void OpenConnectionButton_Click(object sender, EventArgs e)
@@ -57,13 +61,13 @@ public partial class ConnectionForm : Form
 
         try
         {
-            _Setting ??= new ConnectionSetting();
-            _Setting.Server = serverTextBox.Text;
-            _Setting.Database = databaseTextBox.Text;
-            _Setting.Login = userTextBox.Text;
-            _Setting.Password = passwordTextBox.Text;
+            ConnectionSetting settings = new();
+            settings.Server = serverTextBox.Text;
+            settings.Database = databaseTextBox.Text;
+            settings.Login = userTextBox.Text;
+            settings.Password = passwordTextBox.Text;
 
-            _Serializer.Serialize(_Setting);
+            _Serializer.Serialize(settings);
 
             Program.UsedDatabase?.Dispose();
             Program.UsedDatabase = new UsedDatabase(connectionStringBuilder.ToString());

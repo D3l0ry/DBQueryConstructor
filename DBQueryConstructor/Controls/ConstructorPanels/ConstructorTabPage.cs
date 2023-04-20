@@ -260,10 +260,10 @@ internal class ConstructorTabPage : TabPage
 
     public QueryStored GetQueryStored()
     {
-        QueryStored stored = new QueryStored();
+        QueryStored stored = new();
 
-        stored.Server = Program.UsedDatabase.Connection.DataSource;
-        stored.Database = Program.UsedDatabase.Connection.Database;
+        stored.Server = Program.UsedDatabase?.Connection?.DataSource;
+        stored.Database = Program.UsedDatabase?.Connection?.Database;
         stored.Tables = _tableListView.Panels.Select(x => x.Parameter).ToArray();
         stored.Columns = _columnListView.Panels.Select(x => x.Parameter).ToArray();
         stored.Joins = _joinListView.Panels.Select(x => x.Parameter).ToArray();
